@@ -21,7 +21,7 @@ Aplicação web para calcular alcance, custo e tempo de carregamento de veículo
 
 ### Outras funcionalidades
 - Histórico por secção (regista ao sair de cada campo)
-- Curva de carregamento interativa (BMW i5 eDrive40)
+- Curva de carregamento interativa
 - Todas as secções são recolhíveis
 - Cálculos em tempo real
 
