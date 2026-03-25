@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Carregamento Elétrico</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 36px;
+      width: 100%;
+      max-width: 520px;
+      color: #fff;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .header .icon {
+      font-size: 48px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #7ee8fa;
+    }
+
+    .header p {
+      color: rgba(255,255,255,0.55);
+      font-size: 0.9rem;
+      margin-top: 6px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 8px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper .unit {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #7ee8fa;
+      font-size: 0.85rem;
+      font-weight: 600;
+      pointer-events: none;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 14px 60px 14px 16px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      -moz-appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+    }
+
+    input[type="number"]:focus {
+      border-color: #7ee8fa;
+      background: rgba(126, 232, 250, 0.08);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #7ee8fa, #80ff72);
+      border: none;
+      border-radius: 12px;
+      color: #0f2027;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      margin-top: 8px;
+      letter-spacing: 0.04em;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.6);
+      margin-top: 10px;
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.12);
+      opacity: 1;
+    }
+
+    .results {
+      margin-top: 28px;
+      display: none;
+      animation: fadeIn 0.35s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .results-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 14px;
+    }
+
+    .result-card {
+      background: rgba(126, 232, 250, 0.08);
+      border: 1px solid rgba(126, 232, 250, 0.2);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .result-card .label {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.65);
+    }
+
+    .result-card .value {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .result-total {
+      background: linear-gradient(135deg, rgba(126,232,250,0.18), rgba(128,255,114,0.12));
+      border-color: rgba(126, 232, 250, 0.4);
+    }
+
+    .result-total .value {
+      font-size: 1.4rem;
+      color: #7ee8fa;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin: 24px 0;
+    }
+
+    .history-section {
+      margin-top: 28px;
+    }
+
+    .history-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .clear-history {
+      background: none;
+      border: none;
+      color: rgba(255,80,80,0.7);
+      cursor: pointer;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+
+    .clear-history:hover {
+      color: rgba(255,80,80,1);
+    }
+
+    .history-list {
+      list-style: none;
+      max-height: 220px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .history-list::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .history-list::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.15);
+      border-radius: 4px;
+    }
+
+    .history-item {
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+
+    .history-item .meta {
+      color: rgba(255,255,255,0.5);
+    }
+
+    .history-item .total {
+      color: #80ff72;
+      font-weight: 600;
+    }
+
+    .error-msg {
+      color: #ff6b6b;
+      font-size: 0.82rem;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .empty-history {
+      text-align: center;
+      color: rgba(255,255,255,0.3);
+      font-size: 0.85rem;
+      padding: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <span class="icon">⚡</span>
+      <h1>Carregamento Elétrico</h1>
+      <p>Calcule o custo do carregamento do seu veículo</p>
+    </div>
+
+    <div class="form-group">
+      <label for="kwh">Energia carregada</label>
+      <div class="input-wrapper">
+        <input type="number" id="kwh" placeholder="Ex: 40" min="0" step="0.01" />
+        <span class="unit">kWh</span>
+      </div>
+      <span class="error-msg" id="kwh-error">Informe uma quantidade válida de kWh.</span>
+    </div>
+
+    <div class="form-group">
+      <label for="preco">Preço por kWh</label>
+      <div class="input-wrapper">
+        <input type="number" id="preco" placeholder="Ex: 1.85" min="0" step="0.001" />
+        <span class="unit">R$</span>
+      </div>
+      <span class="error-msg" id="preco-error">Informe um preço válido por kWh.</span>
+    </div>
+
+    <button class="btn" onclick="calcular()">Calcular</button>
+    <button class="btn btn-secondary" onclick="limpar()">Limpar campos</button>
+
+    <div class="results" id="results">
+      <hr class="divider" />
+      <div class="results-title">Resultado</div>
+
+      <div class="result-card">
+        <span class="label">Energia carregada</span>
+        <span class="value" id="res-kwh">—</span>
+      </div>
+
+      <div class="result-card">
+        <span class="label">Preço por kWh</span>
+        <span class="value" id="res-preco">—</span>
+      </div>
+
+      <div class="result-card result-total">
+        <span class="label">Custo total</span>
+        <span class="value" id="res-total">—</span>
+      </div>
+    </div>
+
+    <div class="history-section" id="history-section" style="display:none;">
+      <hr class="divider" style="margin-top:0;" />
+      <div class="history-title">
+        <span>Histórico</span>
+        <button class="clear-history" onclick="limparHistorico()">Limpar</button>
+      </div>
+      <ul class="history-list" id="history-list"></ul>
+    </div>
+  </div>
+
+  <script>
+    const historico = [];
+
+    function fmt(valor) {
+      return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function fmtKwh(v) {
+      return v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' kWh';
+    }
+
+    function calcular() {
+      const kwhInput  = document.getElementById('kwh');
+      const precoInput = document.getElementById('preco');
+      const kwhErr    = document.getElementById('kwh-error');
+      const precoErr  = document.getElementById('preco-error');
+
+      let valido = true;
+
+      const kwh   = parseFloat(kwhInput.value);
+      const preco = parseFloat(precoInput.value);
+
+      kwhErr.style.display   = 'none';
+      precoErr.style.display = 'none';
+
+      if (isNaN(kwh) || kwh <= 0) {
+        kwhErr.style.display = 'block';
+        valido = false;
+      }
+
+      if (isNaN(preco) || preco <= 0) {
+        precoErr.style.display = 'block';
+        valido = false;
+      }
+
+      if (!valido) return;
+
+      const total = kwh * preco;
+
+      document.getElementById('res-kwh').textContent   = fmtKwh(kwh);
+      document.getElementById('res-preco').textContent = fmt(preco) + '/kWh';
+      document.getElementById('res-total').textContent = fmt(total);
+      document.getElementById('results').style.display = 'block';
+
+      adicionarHistorico(kwh, preco, total);
+    }
+
+    function adicionarHistorico(kwh, preco, total) {
+      historico.unshift({ kwh, preco, total, hora: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) });
+      if (historico.length > 10) historico.pop();
+      renderHistorico();
+    }
+
+    function renderHistorico() {
+      const section = document.getElementById('history-section');
+      const list    = document.getElementById('history-list');
+
+      if (historico.length === 0) {
+        section.style.display = 'none';
+        return;
+      }
+
+      section.style.display = 'block';
+      list.innerHTML = historico.map(h => `
+        <li class="history-item">
+          <span class="meta">${h.hora} &nbsp;·&nbsp; ${fmtKwh(h.kwh)} @ ${fmt(h.preco)}/kWh</span>
+          <span class="total">${fmt(h.total)}</span>
+        </li>
+      `).join('');
+    }
+
+    function limpar() {
+      document.getElementById('kwh').value   = '';
+      document.getElementById('preco').value = '';
+      document.getElementById('kwh-error').style.display   = 'none';
+      document.getElementById('preco-error').style.display = 'none';
+      document.getElementById('results').style.display = 'none';
+    }
+
+    function limparHistorico() {
+      historico.length = 0;
+      renderHistorico();
+    }
+
+    // Calcular ao pressionar Enter
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') calcular();
+    });
+  </script>
+</body>
+</html>
