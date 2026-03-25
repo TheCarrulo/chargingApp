@@ -475,7 +475,7 @@
             <input type="number" id="velocidade" placeholder="Ex: 11" min="0" step="0.1" oninput="calcularTempo()" onblur="registarHistoricoTempo()" />
             <span class="unit" id="unit-velocidade">kW</span>
           </div>
-          <div id="group-tensao" style="display:none; margin-top:10px;">
+          <div id="group-tensao" style="margin-top:10px;">
             <div class="input-wrapper">
               <input type="number" id="tensao" value="230" min="0" step="1" oninput="calcularTempo()" />
               <span class="unit">V</span>
@@ -507,7 +507,7 @@
     <div class="version">
       <span></span>
       <a href="https://www.linkedin.com/in/brunocarrulo/" target="_blank" rel="noopener">Made by Bruno Carrulo</a>
-      <span>v1.11</span>
+      <span>v1.12</span>
     </div>
   </div>
 
@@ -607,9 +607,9 @@
       document.getElementById('btn-kw').classList.toggle('active', modo === 'kw');
       document.getElementById('btn-amp').classList.toggle('active', modo === 'amp');
       document.getElementById('unit-velocidade').textContent = modo === 'kw' ? 'kW' : 'A';
-      document.getElementById('group-tensao').style.display = modo === 'amp' ? 'block' : 'none';
       document.getElementById('velocidade').placeholder = modo === 'kw' ? 'Ex: 11' : 'Ex: 16';
       document.getElementById('velocidade').value = '';
+      document.getElementById('res-kw-amp').textContent = '';
       calcularTempo();
     }
 
@@ -629,9 +629,20 @@
       const elTempo   = document.getElementById('res-tempo');
       const elKwAmp   = document.getElementById('res-kw-amp');
 
-      if (modoVelocidade === 'amp' && elKwAmp) {
-        const velocidadeKw = getVelocidadeKw();
-        elKwAmp.textContent = velocidadeKw ? `≈ ${velocidadeKw.toLocaleString('pt-PT', { maximumFractionDigits: 2 })} kW` : '';
+      if (elKwAmp) {
+        const val = parseFloat(document.getElementById('velocidade').value);
+        const tensao = parseFloat(document.getElementById('tensao').value) || 230;
+        if (val > 0) {
+          if (modoVelocidade === 'amp') {
+            const kw = (val * tensao) / 1000;
+            elKwAmp.textContent = `≈ ${kw.toLocaleString('pt-PT', { maximumFractionDigits: 2 })} kW`;
+          } else {
+            const amp = (val * 1000) / tensao;
+            elKwAmp.textContent = `≈ ${amp.toLocaleString('pt-PT', { maximumFractionDigits: 1 })} A`;
+          }
+        } else {
+          elKwAmp.textContent = '';
+        }
       }
 
       if (bateria > 0 && percFinal > percRest && percRest >= 0) {
