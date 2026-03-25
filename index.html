@@ -469,7 +469,7 @@
           <label>Velocidade de carregamento</label>
           <div class="toggle-unit">
             <button id="btn-kw" class="active" onclick="setModoVelocidade('kw')">kW</button>
-            <button id="btn-amp" onclick="setModoVelocidade('amp')">Amperes</button>
+            <button id="btn-amp" onclick="setModoVelocidade('amp')">A</button>
           </div>
           <div class="input-wrapper">
             <input type="number" id="velocidade" placeholder="Ex: 11" min="0" step="0.1" oninput="calcularTempo()" onblur="registarHistoricoTempo()" />
@@ -481,6 +481,7 @@
               <span class="unit">V</span>
             </div>
             <div style="font-size:0.75rem; color:rgba(255,255,255,0.3); margin-top:5px;">230V monofásico · 400V trifásico</div>
+            <div id="res-kw-amp" style="font-size:0.82rem; color:#7ee8fa; margin-top:8px; text-align:right;"></div>
           </div>
         </div>
         <div class="form-group">
@@ -626,6 +627,12 @@
       const percFinal = parseFloat(document.getElementById('perc-final').value);
       const elEnergia = document.getElementById('res-energia-tempo');
       const elTempo   = document.getElementById('res-tempo');
+      const elKwAmp   = document.getElementById('res-kw-amp');
+
+      if (modoVelocidade === 'amp' && elKwAmp) {
+        const velocidadeKw = getVelocidadeKw();
+        elKwAmp.textContent = velocidadeKw ? `≈ ${velocidadeKw.toLocaleString('pt-PT', { maximumFractionDigits: 2 })} kW` : '';
+      }
 
       if (bateria > 0 && percFinal > percRest && percRest >= 0) {
         const energia = ((percFinal - percRest) / 100) * bateria;
