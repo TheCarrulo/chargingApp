@@ -265,7 +265,33 @@
 
     .version a:hover { color: #7ee8fa; }
 
-    /* ── Modal ── */
+    .toggle-unit {
+      display: flex;
+      gap: 4px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      padding: 3px;
+      margin-bottom: 10px;
+    }
+
+    .toggle-unit button {
+      flex: 1;
+      padding: 5px 10px;
+      background: none;
+      border: none;
+      border-radius: 6px;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .toggle-unit button.active {
+      background: rgba(126,232,250,0.15);
+      color: #7ee8fa;
+    }
     .modal-overlay {
       display: none;
       position: fixed;
@@ -440,10 +466,21 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="velocidade">Velocidade de carregamento</label>
+          <label>Velocidade de carregamento</label>
+          <div class="toggle-unit">
+            <button id="btn-kw" class="active" onclick="setModoVelocidade('kw')">kW</button>
+            <button id="btn-amp" onclick="setModoVelocidade('amp')">Amperes</button>
+          </div>
           <div class="input-wrapper">
             <input type="number" id="velocidade" placeholder="Ex: 11" min="0" step="0.1" oninput="calcularTempo()" onblur="registarHistoricoTempo()" />
-            <span class="unit">kW</span>
+            <span class="unit" id="unit-velocidade">kW</span>
+          </div>
+          <div id="group-tensao" style="display:none; margin-top:10px;">
+            <div class="input-wrapper">
+              <input type="number" id="tensao" value="230" min="0" step="1" oninput="calcularTempo()" />
+              <span class="unit">V</span>
+            </div>
+            <div style="font-size:0.75rem; color:rgba(255,255,255,0.3); margin-top:5px;">230V monofásico · 400V trifásico</div>
           </div>
         </div>
         <div class="form-group">
@@ -562,20 +599,40 @@
 
     // ── Tempo ──
     const histTempo = [];
+    let modoVelocidade = 'kw';
+
+    function setModoVelocidade(modo) {
+      modoVelocidade = modo;
+      document.getElementById('btn-kw').classList.toggle('active', modo === 'kw');
+      document.getElementById('btn-amp').classList.toggle('active', modo === 'amp');
+      document.getElementById('unit-velocidade').textContent = modo === 'kw' ? 'kW' : 'A';
+      document.getElementById('group-tensao').style.display = modo === 'amp' ? 'block' : 'none';
+      document.getElementById('velocidade').placeholder = modo === 'kw' ? 'Ex: 11' : 'Ex: 16';
+      document.getElementById('velocidade').value = '';
+      calcularTempo();
+    }
+
+    function getVelocidadeKw() {
+      const val = parseFloat(document.getElementById('velocidade').value);
+      if (isNaN(val) || val <= 0) return null;
+      if (modoVelocidade === 'kw') return val;
+      const tensao = parseFloat(document.getElementById('tensao').value) || 230;
+      return (val * tensao) / 1000;
+    }
 
     function calcularTempo() {
-      const bateria    = parseFloat(document.getElementById('bateria-tempo').value);
-      const percRest   = parseFloat(document.getElementById('perc-restante').value);
-      const percFinal  = parseFloat(document.getElementById('perc-final').value);
-      const velocidade = parseFloat(document.getElementById('velocidade').value);
-      const elEnergia  = document.getElementById('res-energia-tempo');
-      const elTempo    = document.getElementById('res-tempo');
+      const bateria   = parseFloat(document.getElementById('bateria-tempo').value);
+      const percRest  = parseFloat(document.getElementById('perc-restante').value);
+      const percFinal = parseFloat(document.getElementById('perc-final').value);
+      const elEnergia = document.getElementById('res-energia-tempo');
+      const elTempo   = document.getElementById('res-tempo');
 
       if (bateria > 0 && percFinal > percRest && percRest >= 0) {
         const energia = ((percFinal - percRest) / 100) * bateria;
         elEnergia.textContent = energia.toLocaleString('pt-PT', { maximumFractionDigits: 2 }) + ' kWh';
-        if (velocidade > 0) {
-          const horas = energia / velocidade;
+        const velocidadeKw = getVelocidadeKw();
+        if (velocidadeKw) {
+          const horas = energia / velocidadeKw;
           const h = Math.floor(horas);
           const m = Math.round((horas - h) * 60);
           elTempo.textContent = h > 0 ? `${h}h ${m}min` : `${m}min`;
@@ -589,19 +646,23 @@
     }
 
     function registarHistoricoTempo() {
-      const bateria    = parseFloat(document.getElementById('bateria-tempo').value);
-      const percRest   = parseFloat(document.getElementById('perc-restante').value);
-      const percFinal  = parseFloat(document.getElementById('perc-final').value);
-      const velocidade = parseFloat(document.getElementById('velocidade').value);
-      if (bateria > 0 && percFinal > percRest && percRest >= 0 && velocidade > 0) {
+      const bateria   = parseFloat(document.getElementById('bateria-tempo').value);
+      const percRest  = parseFloat(document.getElementById('perc-restante').value);
+      const percFinal = parseFloat(document.getElementById('perc-final').value);
+      const velocidadeKw = getVelocidadeKw();
+      const velocidadeRaw = parseFloat(document.getElementById('velocidade').value);
+      if (bateria > 0 && percFinal > percRest && percRest >= 0 && velocidadeKw) {
         const energia = ((percFinal - percRest) / 100) * bateria;
-        const horas   = energia / velocidade;
+        const horas   = energia / velocidadeKw;
         const h = Math.floor(horas);
         const m = Math.round((horas - h) * 60);
         const tempoStr = h > 0 ? `${h}h ${m}min` : `${m}min`;
         const last = histTempo[0];
-        if (last && last.percRest === percRest && last.percFinal === percFinal && last.velocidade === velocidade) return;
-        histTempo.unshift({ percRest, percFinal, velocidade, tempoStr, hora: hora() });
+        if (last && last.percRest === percRest && last.percFinal === percFinal && last.velocidadeRaw === velocidadeRaw) return;
+        const label = modoVelocidade === 'kw'
+          ? `${velocidadeRaw} kW`
+          : `${velocidadeRaw}A × ${document.getElementById('tensao').value || 230}V = ${velocidadeKw.toFixed(2)} kW`;
+        histTempo.unshift({ percRest, percFinal, velocidadeRaw, tempoStr, label, hora: hora() });
         if (histTempo.length > 10) histTempo.pop();
         renderHistoricoTempo();
       }
@@ -614,7 +675,7 @@
       wrap.classList.add('visible');
       list.innerHTML = histTempo.map(h => `
         <li class="history-item">
-          <span class="meta">${h.hora} · ${h.percRest}%→${h.percFinal}% @ ${h.velocidade} kW</span>
+          <span class="meta">${h.hora} · ${h.percRest}%→${h.percFinal}% @ ${h.label}</span>
           <span class="val">${h.tempoStr}</span>
         </li>`).join('');
     }
