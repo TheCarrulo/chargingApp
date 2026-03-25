@@ -5,11 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Calculadora de Carregamento Elétrico</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -22,57 +18,90 @@
     }
 
     .container {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255,255,255,0.05);
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 20px;
       padding: 36px;
       width: 100%;
       max-width: 520px;
       color: #fff;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
     }
 
     .header {
       text-align: center;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
     }
 
-    .header .icon {
-      font-size: 48px;
-      display: block;
-      margin-bottom: 10px;
+    .header .icon { font-size: 48px; display: block; margin-bottom: 10px; }
+    .header h1 { font-size: 1.6rem; font-weight: 700; color: #7ee8fa; }
+    .header p  { color: rgba(255,255,255,0.55); font-size: 0.9rem; margin-top: 6px; }
+
+    /* ── Collapsible sections ── */
+    .section {
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      margin-bottom: 12px;
+      overflow: hidden;
     }
 
-    .header h1 {
-      font-size: 1.6rem;
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+      background: rgba(255,255,255,0.04);
+      transition: background 0.2s;
+    }
+
+    .section-header:hover { background: rgba(255,255,255,0.08); }
+
+    .section-header .sec-title {
+      font-size: 0.9rem;
       font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
       color: #7ee8fa;
     }
 
-    .header p {
-      color: rgba(255,255,255,0.55);
-      font-size: 0.9rem;
-      margin-top: 6px;
+    .section-header .sec-arrow {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.4);
+      transition: transform 0.25s;
     }
 
-    .form-group {
-      margin-bottom: 20px;
+    .section.open .sec-arrow { transform: rotate(180deg); }
+
+    .section-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.25s ease;
+      padding: 0 20px;
     }
+
+    .section.open .section-body {
+      max-height: 800px;
+      padding: 20px 20px;
+    }
+
+    /* ── Form elements ── */
+    .form-group { margin-bottom: 18px; }
+    .form-group:last-child { margin-bottom: 0; }
 
     label {
       display: block;
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.7);
-      margin-bottom: 8px;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 7px;
       font-weight: 500;
       letter-spacing: 0.03em;
       text-transform: uppercase;
     }
 
-    .input-wrapper {
-      position: relative;
-    }
+    .input-wrapper { position: relative; }
 
     .input-wrapper .unit {
       position: absolute;
@@ -80,14 +109,14 @@
       top: 50%;
       transform: translateY(-50%);
       color: #7ee8fa;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
       pointer-events: none;
     }
 
     input[type="number"] {
       width: 100%;
-      padding: 14px 60px 14px 16px;
+      padding: 13px 60px 13px 14px;
       background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.15);
       border-radius: 10px;
@@ -99,118 +128,76 @@
     }
 
     input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-    }
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
 
     input[type="number"]:focus {
       border-color: #7ee8fa;
-      background: rgba(126, 232, 250, 0.08);
-    }
-
-    .btn {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, #7ee8fa, #80ff72);
-      border: none;
-      border-radius: 12px;
-      color: #0f2027;
-      font-size: 1rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: opacity 0.2s, transform 0.1s;
-      margin-top: 8px;
-      letter-spacing: 0.04em;
-    }
-
-    .btn:hover {
-      opacity: 0.9;
-    }
-
-    .btn:active {
-      transform: scale(0.98);
-    }
-
-    .btn-secondary {
-      background: rgba(255,255,255,0.08);
-      color: rgba(255,255,255,0.6);
-      margin-top: 10px;
-      font-size: 0.88rem;
-      font-weight: 500;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255,255,255,0.12);
-      opacity: 1;
-    }
-
-    .results {
-      margin-top: 28px;
-      display: none;
-      animation: fadeIn 0.35s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .results-title {
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: rgba(255,255,255,0.45);
-      margin-bottom: 14px;
+      background: rgba(126,232,250,0.08);
     }
 
     .result-card {
-      background: rgba(126, 232, 250, 0.08);
-      border: 1px solid rgba(126, 232, 250, 0.2);
+      background: rgba(126,232,250,0.08);
+      border: 1px solid rgba(126,232,250,0.2);
       border-radius: 12px;
-      padding: 18px 20px;
+      padding: 14px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
     }
 
-    .result-card .label {
-      font-size: 0.88rem;
-      color: rgba(255,255,255,0.65);
-    }
-
-    .result-card .value {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #fff;
-    }
+    .result-card .label { font-size: 0.85rem; color: rgba(255,255,255,0.6); }
+    .result-card .value { font-size: 1.05rem; font-weight: 700; color: #fff; }
 
     .result-total {
       background: linear-gradient(135deg, rgba(126,232,250,0.18), rgba(128,255,114,0.12));
-      border-color: rgba(126, 232, 250, 0.4);
+      border-color: rgba(126,232,250,0.4);
     }
 
-    .result-total .value {
-      font-size: 1.4rem;
+    .result-total .value { font-size: 1.3rem; color: #7ee8fa; }
+
+    /* ── Buttons ── */
+    .btn-curve {
+      width: 100%;
+      padding: 13px;
+      background: rgba(126,232,250,0.08);
+      border: 1px solid rgba(126,232,250,0.25);
+      border-radius: 12px;
       color: #7ee8fa;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+      letter-spacing: 0.03em;
+      transition: background 0.2s;
     }
 
-    .divider {
-      border: none;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      margin: 24px 0;
+    .btn-curve:hover { background: rgba(126,232,250,0.16); }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 13px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
     }
 
-    .history-section {
-      margin-top: 28px;
-    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+    /* ── History ── */
+    .history-section { margin-top: 20px; }
 
     .history-title {
       font-size: 0.78rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: rgba(255,255,255,0.45);
-      margin-bottom: 12px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -227,9 +214,7 @@
       transition: color 0.2s;
     }
 
-    .clear-history:hover {
-      color: rgba(255,80,80,1);
-    }
+    .clear-history:hover { color: rgba(255,80,80,1); }
 
     .history-list {
       list-style: none;
@@ -238,14 +223,8 @@
       padding-right: 4px;
     }
 
-    .history-list::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .history-list::-webkit-scrollbar-thumb {
-      background: rgba(255,255,255,0.15);
-      border-radius: 4px;
-    }
+    .history-list::-webkit-scrollbar { width: 4px; }
+    .history-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
 
     .history-item {
       background: rgba(255,255,255,0.04);
@@ -258,53 +237,19 @@
       font-size: 0.85rem;
     }
 
-    .history-item .meta {
-      color: rgba(255,255,255,0.5);
-    }
+    .history-item .meta { color: rgba(255,255,255,0.5); }
+    .history-item .total { color: #80ff72; font-weight: 600; }
 
-    .history-item .total {
-      color: #80ff72;
-      font-weight: 600;
-    }
-
-    .error-msg {
-      color: #ff6b6b;
-      font-size: 0.82rem;
-      margin-top: 6px;
-      display: none;
-    }
-
-    .empty-history {
-      text-align: center;
-      color: rgba(255,255,255,0.3);
-      font-size: 0.85rem;
-      padding: 20px 0;
-    }
+    .divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 16px 0; }
 
     .version {
       text-align: right;
       font-size: 0.72rem;
       color: rgba(255,255,255,0.2);
-      margin-top: 20px;
+      margin-top: 16px;
     }
 
-    .btn-curve {
-      width: 100%;
-      padding: 13px;
-      background: rgba(126, 232, 250, 0.08);
-      border: 1px solid rgba(126, 232, 250, 0.25);
-      border-radius: 12px;
-      color: #7ee8fa;
-      font-size: 0.92rem;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 10px;
-      letter-spacing: 0.03em;
-      transition: background 0.2s;
-    }
-
-    .btn-curve:hover { background: rgba(126, 232, 250, 0.16); }
-
+    /* ── Modal ── */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -321,7 +266,7 @@
 
     .modal {
       background: #152530;
-      border: 1px solid rgba(126, 232, 250, 0.2);
+      border: 1px solid rgba(126,232,250,0.2);
       border-radius: 20px;
       padding: 24px;
       width: 100%;
@@ -335,11 +280,7 @@
       margin-bottom: 16px;
     }
 
-    .modal-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #7ee8fa;
-    }
+    .modal-title { font-size: 0.95rem; font-weight: 700; color: #7ee8fa; }
 
     .modal-close {
       background: none;
@@ -363,6 +304,7 @@
       <canvas id="grafico-curva"></canvas>
     </div>
   </div>
+
   <div class="container">
     <div class="header">
       <span class="icon">⚡</span>
@@ -370,110 +312,124 @@
       <p>Calcule o custo do carregamento do seu veículo</p>
     </div>
 
-    <div class="form-group">
-      <label for="bateria">Capacidade da bateria</label>
-      <div class="input-wrapper">
-        <input type="number" id="bateria" value="80.7" min="0" step="0.1" oninput="calcularAlcance()" />
-        <span class="unit">kWh</span>
+    <!-- Secção 1: Alcance -->
+    <div class="section" id="sec-alcance">
+      <div class="section-header" onclick="toggleSection('sec-alcance')">
+        <span class="sec-title">Alcance</span>
+        <span class="sec-arrow">▼</span>
+      </div>
+      <div class="section-body">
+        <div class="form-group">
+          <label for="bateria">Capacidade da bateria</label>
+          <div class="input-wrapper">
+            <input type="number" id="bateria" value="80.7" min="0" step="0.1" oninput="calcularAlcance()" />
+            <span class="unit">kWh</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="consumo">Consumo</label>
+          <div class="input-wrapper">
+            <input type="number" id="consumo" placeholder="Ex: 16" min="0" step="0.1" oninput="calcularAlcance()" />
+            <span class="unit" style="font-size:0.75rem">kWh/100km</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Alcance estimado</label>
+          <div class="result-card">
+            <span class="label">Bateria / Consumo × 100</span>
+            <span class="value" id="res-alcance" style="color:#80ff72">—</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="form-group">
-      <label for="consumo">Consumo</label>
-      <div class="input-wrapper">
-        <input type="number" id="consumo" placeholder="Ex: 16" min="0" step="0.1" oninput="calcularAlcance()" />
-        <span class="unit" style="font-size:0.75rem">kWh/100km</span>
+    <!-- Secção 2: Custo -->
+    <div class="section" id="sec-custo">
+      <div class="section-header" onclick="toggleSection('sec-custo')">
+        <span class="sec-title">Custo de Carregamento</span>
+        <span class="sec-arrow">▼</span>
+      </div>
+      <div class="section-body">
+        <div class="form-group">
+          <label for="kwh">Energia carregada</label>
+          <div class="input-wrapper">
+            <input type="number" id="kwh" placeholder="Ex: 40" min="0" step="0.01" oninput="calcularCusto()" onblur="registarHistorico()" />
+            <span class="unit">kWh</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="preco">Preço por kWh</label>
+          <div class="input-wrapper">
+            <input type="number" id="preco" placeholder="Ex: 0.22" min="0" step="0.001" oninput="calcularCusto()" onblur="registarHistorico()" />
+            <span class="unit">€</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Custo total</label>
+          <div class="result-card result-total">
+            <span class="label">Energia × Preço/kWh</span>
+            <span class="value" id="res-total">—</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="form-group">
-      <label>Alcance estimado</label>
-      <div class="result-card" style="margin-bottom:0; padding: 14px 16px;">
-        <span class="label">Bateria / Consumo × 100</span>
-        <span class="value" id="res-alcance" style="color:#80ff72">—</span>
+    <!-- Secção 3: Tempo -->
+    <div class="section" id="sec-tempo">
+      <div class="section-header" onclick="toggleSection('sec-tempo')">
+        <span class="sec-title">Tempo para Carregar</span>
+        <span class="sec-arrow">▼</span>
       </div>
-    </div>
-
-    <hr class="divider" />
-
-    <div class="form-group">
-      <label for="kwh">Energia carregada</label>
-      <div class="input-wrapper">
-        <input type="number" id="kwh" placeholder="Ex: 40" min="0" step="0.01" oninput="calcularCusto()" onblur="registarHistorico()" />
-        <span class="unit">kWh</span>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="preco">Preço por kWh</label>
-      <div class="input-wrapper">
-        <input type="number" id="preco" placeholder="Ex: 0.22" min="0" step="0.001" oninput="calcularCusto()" onblur="registarHistorico()" />
-        <span class="unit">€</span>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>Custo total</label>
-      <div class="result-card result-total" style="margin-bottom:0; padding: 14px 16px;">
-        <span class="label">Energia × Preço/kWh</span>
-        <span class="value" id="res-total" style="font-size:1.4rem; color:#7ee8fa">—</span>
-      </div>
-    </div>
-
-    <hr class="divider" />
-
-    <div class="form-group">
-      <label for="bateria-tempo">Capacidade da bateria</label>
-      <div class="input-wrapper">
-        <input type="number" id="bateria-tempo" value="80.7" min="0" step="0.1" oninput="calcularTempo()" />
-        <span class="unit">kWh</span>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="perc-restante">Percentagem restante</label>
-      <div class="input-wrapper">
-        <input type="number" id="perc-restante" placeholder="Ex: 20" min="0" max="100" step="1" oninput="calcularTempo()" />
-        <span class="unit">%</span>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="perc-final">Percentagem final</label>
-      <div class="input-wrapper">
-        <input type="number" id="perc-final" placeholder="Ex: 80" min="0" max="100" step="1" oninput="calcularTempo()" />
-        <span class="unit">%</span>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>Energia a carregar</label>
-      <div class="result-card" style="margin-bottom:0; padding: 14px 16px;">
-        <span class="label">(% final − % restante) × bateria</span>
-        <span class="value" id="res-energia-tempo" style="color:#fff">—</span>
-      </div>
-    </div>
-
-    <div class="form-group" style="margin-top:20px;">
-      <label for="velocidade">Velocidade de carregamento</label>
-      <div class="input-wrapper">
-        <input type="number" id="velocidade" placeholder="Ex: 11" min="0" step="0.1" oninput="calcularTempo()" />
-        <span class="unit">kW</span>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label>Tempo para carregar</label>
-      <div class="result-card result-total" style="margin-bottom:0; padding: 14px 16px;">
-        <span class="label">Energia ÷ Velocidade</span>
-        <span class="value" id="res-tempo" style="font-size:1.4rem; color:#7ee8fa">—</span>
+      <div class="section-body">
+        <div class="form-group">
+          <label for="bateria-tempo">Capacidade da bateria</label>
+          <div class="input-wrapper">
+            <input type="number" id="bateria-tempo" value="80.7" min="0" step="0.1" oninput="calcularTempo()" />
+            <span class="unit">kWh</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="perc-restante">Percentagem restante</label>
+          <div class="input-wrapper">
+            <input type="number" id="perc-restante" placeholder="Ex: 20" min="0" max="100" step="1" oninput="calcularTempo()" />
+            <span class="unit">%</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="perc-final">Percentagem final</label>
+          <div class="input-wrapper">
+            <input type="number" id="perc-final" placeholder="Ex: 80" min="0" max="100" step="1" oninput="calcularTempo()" />
+            <span class="unit">%</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Energia a carregar</label>
+          <div class="result-card">
+            <span class="label">(% final − % restante) × bateria</span>
+            <span class="value" id="res-energia-tempo" style="color:#fff">—</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="velocidade">Velocidade de carregamento</label>
+          <div class="input-wrapper">
+            <input type="number" id="velocidade" placeholder="Ex: 11" min="0" step="0.1" oninput="calcularTempo()" />
+            <span class="unit">kW</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Tempo para carregar</label>
+          <div class="result-card result-total">
+            <span class="label">Energia ÷ Velocidade</span>
+            <span class="value" id="res-tempo">—</span>
+          </div>
+        </div>
       </div>
     </div>
 
     <button class="btn-curve" onclick="abrirModal()">⚡ Curva de Carregamento</button>
-    <button class="btn btn-secondary" onclick="limpar()" style="margin-top:10px;">Limpar campos</button>
+    <button class="btn-secondary" onclick="limpar()">Limpar campos</button>
 
-    <div class="version">v1.7</div>
+    <div class="version">v1.8</div>
 
     <div class="history-section" id="history-section" style="display:none;">
       <hr class="divider" style="margin-top:0;" />
@@ -489,6 +445,10 @@
   <script>
     const historico = [];
 
+    function toggleSection(id) {
+      document.getElementById(id).classList.toggle('open');
+    }
+
     function fmt(valor) {
       return valor.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' });
     }
@@ -502,8 +462,7 @@
       const consumo = parseFloat(document.getElementById('consumo').value);
       const el = document.getElementById('res-alcance');
       if (bateria > 0 && consumo > 0) {
-        const alcance = (bateria * 100) / consumo;
-        el.textContent = alcance.toLocaleString('pt-PT', { maximumFractionDigits: 0 }) + ' km';
+        el.textContent = ((bateria * 100) / consumo).toLocaleString('pt-PT', { maximumFractionDigits: 0 }) + ' km';
       } else {
         el.textContent = '—';
       }
@@ -538,19 +497,13 @@
       const kwh   = parseFloat(document.getElementById('kwh').value);
       const preco = parseFloat(document.getElementById('preco').value);
       const el    = document.getElementById('res-total');
-      if (kwh > 0 && preco > 0) {
-        el.textContent = fmt(kwh * preco);
-      } else {
-        el.textContent = '—';
-      }
+      el.textContent = (kwh > 0 && preco > 0) ? fmt(kwh * preco) : '—';
     }
 
     function registarHistorico() {
       const kwh   = parseFloat(document.getElementById('kwh').value);
       const preco = parseFloat(document.getElementById('preco').value);
-      if (kwh > 0 && preco > 0) {
-        adicionarHistorico(kwh, preco, kwh * preco);
-      }
+      if (kwh > 0 && preco > 0) adicionarHistorico(kwh, preco, kwh * preco);
     }
 
     function adicionarHistorico(kwh, preco, total) {
@@ -563,12 +516,7 @@
     function renderHistorico() {
       const section = document.getElementById('history-section');
       const list    = document.getElementById('history-list');
-
-      if (historico.length === 0) {
-        section.style.display = 'none';
-        return;
-      }
-
+      if (historico.length === 0) { section.style.display = 'none'; return; }
       section.style.display = 'block';
       list.innerHTML = historico.map(h => `
         <li class="history-item">
@@ -579,18 +527,12 @@
     }
 
     function limpar() {
-      document.getElementById('kwh').value     = '';
-      document.getElementById('preco').value   = '';
-      document.getElementById('bateria').value = '';
-      document.getElementById('consumo').value = '';
-      document.getElementById('bateria-tempo').value = '';
-      document.getElementById('perc-restante').value = '';
-      document.getElementById('perc-final').value    = '';
-      document.getElementById('velocidade').value    = '';
-      document.getElementById('res-total').textContent        = '—';
-      document.getElementById('res-alcance').textContent      = '—';
-      document.getElementById('res-energia-tempo').textContent = '—';
-      document.getElementById('res-tempo').textContent        = '—';
+      ['kwh','preco','bateria','consumo','bateria-tempo','perc-restante','perc-final','velocidade']
+        .forEach(id => document.getElementById(id).value = '');
+      document.getElementById('bateria').value       = '80.7';
+      document.getElementById('bateria-tempo').value = '80.7';
+      ['res-total','res-alcance','res-energia-tempo','res-tempo']
+        .forEach(id => document.getElementById(id).textContent = '—');
     }
 
     function limparHistorico() {
@@ -598,9 +540,8 @@
       renderHistorico();
     }
 
-    // ── Curva de carregamento ──────────────────────────────
+    // ── Curva de carregamento ──
     let chartInstance = null;
-
     const curvaData = {
       labels: [0,2,4,6,8,10,12,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,92,95,98,99,100],
       values: [60,193,196,200,200,202,206,190,178,165,155,148,140,130,115,110,105,93,88,78,70,63,57,55,57,53,35,5]
@@ -627,30 +568,16 @@
           options: {
             plugins: { legend: { display: false } },
             scales: {
-              x: {
-                ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 11 } },
-                grid:  { color: 'rgba(255,255,255,0.06)' }
-              },
-              y: {
-                title: { display: true, text: 'kW', color: 'rgba(255,255,255,0.4)', font: { size: 11 } },
-                ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 11 } },
-                grid:  { color: 'rgba(255,255,255,0.06)' },
-                min: 0
-              }
+              x: { ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.06)' } },
+              y: { title: { display: true, text: 'kW', color: 'rgba(255,255,255,0.4)', font: { size: 11 } }, ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.06)' }, min: 0 }
             }
           }
         });
       }
     }
 
-    function fecharModal() {
-      document.getElementById('modal-curva').classList.remove('open');
-    }
-
-    function fecharModalFora(e) {
-      if (e.target === document.getElementById('modal-curva')) fecharModal();
-    }
-
+    function fecharModal() { document.getElementById('modal-curva').classList.remove('open'); }
+    function fecharModalFora(e) { if (e.target === document.getElementById('modal-curva')) fecharModal(); }
   </script>
 </body>
 </html>
