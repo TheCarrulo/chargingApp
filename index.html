@@ -248,11 +248,21 @@
     .btn-secondary:hover { background: rgba(255,255,255,0.1); }
 
     .version {
-      text-align: right;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       font-size: 0.72rem;
       color: rgba(255,255,255,0.2);
       margin-top: 16px;
     }
+
+    .version a {
+      color: rgba(255,255,255,0.2);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .version a:hover { color: #7ee8fa; }
 
     /* ── Modal ── */
     .modal-overlay {
@@ -455,7 +465,10 @@
     <button class="btn-curve" onclick="abrirModal()">⚡ Curva de Carregamento</button>
     <button class="btn-secondary" onclick="limpar()">Limpar campos</button>
 
-    <div class="version">v1.9</div>
+    <div class="version">
+      <a href="https://www.linkedin.com/in/brunocarrulo/" target="_blank" rel="noopener">made by Bruno Carrulo</a>
+      <span>v1.9</span>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
