@@ -475,7 +475,7 @@
             <input type="number" id="velocidade" placeholder="Ex: 11" min="0" step="0.1" oninput="calcularTempo()" onblur="registarHistoricoTempo()" />
             <span class="unit" id="unit-velocidade">kW</span>
           </div>
-          <div id="group-tensao" style="margin-top:10px;">
+          <div id="group-tensao" style="margin-top:10px; display:none;">
             <div class="input-wrapper">
               <input type="number" id="tensao" value="230" min="0" step="1" oninput="calcularTempo()" />
               <span class="unit">V</span>
@@ -607,6 +607,7 @@
       document.getElementById('btn-kw').classList.toggle('active', modo === 'kw');
       document.getElementById('btn-amp').classList.toggle('active', modo === 'amp');
       document.getElementById('unit-velocidade').textContent = modo === 'kw' ? 'kW' : 'A';
+      document.getElementById('group-tensao').style.display = modo === 'amp' ? 'block' : 'none';
       document.getElementById('velocidade').placeholder = modo === 'kw' ? 'Ex: 11' : 'Ex: 16';
       document.getElementById('velocidade').value = '';
       document.getElementById('res-kw-amp').textContent = '';
@@ -631,13 +632,13 @@
 
       if (elKwAmp) {
         const val = parseFloat(document.getElementById('velocidade').value);
-        const tensao = parseFloat(document.getElementById('tensao').value) || 230;
         if (val > 0) {
           if (modoVelocidade === 'amp') {
+            const tensao = parseFloat(document.getElementById('tensao').value) || 230;
             const kw = (val * tensao) / 1000;
             elKwAmp.textContent = `≈ ${kw.toLocaleString('pt-PT', { maximumFractionDigits: 2 })} kW`;
           } else {
-            const amp = (val * 1000) / tensao;
+            const amp = (val * 1000) / 230;
             elKwAmp.textContent = `≈ ${amp.toLocaleString('pt-PT', { maximumFractionDigits: 1 })} A`;
           }
         } else {
