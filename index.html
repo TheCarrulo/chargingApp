@@ -319,43 +319,28 @@
     <div class="form-group">
       <label for="kwh">Energia carregada</label>
       <div class="input-wrapper">
-        <input type="number" id="kwh" placeholder="Ex: 40" min="0" step="0.01" />
+        <input type="number" id="kwh" placeholder="Ex: 40" min="0" step="0.01" oninput="calcularCusto()" />
         <span class="unit">kWh</span>
       </div>
-      <span class="error-msg" id="kwh-error">Informe uma quantidade válida de kWh.</span>
     </div>
 
     <div class="form-group">
-      <label for="preco">Preço por kWh (€)</label>
+      <label for="preco">Preço por kWh</label>
       <div class="input-wrapper">
-        <input type="number" id="preco" placeholder="Ex: 0.22" min="0" step="0.001" />
+        <input type="number" id="preco" placeholder="Ex: 0.22" min="0" step="0.001" oninput="calcularCusto()" />
         <span class="unit">€</span>
       </div>
-      <span class="error-msg" id="preco-error">Informe um preço válido por kWh.</span>
     </div>
 
-    <button class="btn" onclick="calcular()">Calcular</button>
-    <button class="btn btn-secondary" onclick="limpar()">Limpar campos</button>
-
-    <div class="results" id="results">
-      <hr class="divider" />
-      <div class="results-title">Resultado</div>
-
-      <div class="result-card">
-        <span class="label">Energia carregada</span>
-        <span class="value" id="res-kwh">—</span>
-      </div>
-
-      <div class="result-card">
-        <span class="label">Preço por kWh</span>
-        <span class="value" id="res-preco">—</span>
-      </div>
-
-      <div class="result-card result-total">
-        <span class="label">Custo total</span>
-        <span class="value" id="res-total">—</span>
+    <div class="form-group">
+      <label>Custo total</label>
+      <div class="result-card result-total" style="margin-bottom:0; padding: 14px 16px;">
+        <span class="label">Energia × Preço/kWh</span>
+        <span class="value" id="res-total" style="font-size:1.4rem; color:#7ee8fa">—</span>
       </div>
     </div>
+
+    <button class="btn btn-secondary" onclick="limpar()" style="margin-top:8px;">Limpar campos</button>
 
     <div class="history-section" id="history-section" style="display:none;">
       <hr class="divider" style="margin-top:0;" />
@@ -390,40 +375,19 @@
       }
     }
 
-    function calcular() {
-      const kwhInput  = document.getElementById('kwh');
-      const precoInput = document.getElementById('preco');
-      const kwhErr    = document.getElementById('kwh-error');
-      const precoErr  = document.getElementById('preco-error');
-
-      let valido = true;
-
-      const kwh   = parseFloat(kwhInput.value);
-      const preco = parseFloat(precoInput.value);
-
-      kwhErr.style.display   = 'none';
-      precoErr.style.display = 'none';
-
-      if (isNaN(kwh) || kwh <= 0) {
-        kwhErr.style.display = 'block';
-        valido = false;
+    let debounceTimer;
+    function calcularCusto() {
+      const kwh   = parseFloat(document.getElementById('kwh').value);
+      const preco = parseFloat(document.getElementById('preco').value);
+      const el    = document.getElementById('res-total');
+      if (kwh > 0 && preco > 0) {
+        const total = kwh * preco;
+        el.textContent = fmt(total);
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => adicionarHistorico(kwh, preco, total), 800);
+      } else {
+        el.textContent = '—';
       }
-
-      if (isNaN(preco) || preco <= 0) {
-        precoErr.style.display = 'block';
-        valido = false;
-      }
-
-      if (!valido) return;
-
-      const total = kwh * preco;
-
-      document.getElementById('res-kwh').textContent   = fmtKwh(kwh);
-      document.getElementById('res-preco').textContent = fmt(preco) + '/kWh';
-      document.getElementById('res-total').textContent = fmt(total);
-      document.getElementById('results').style.display = 'block';
-
-      adicionarHistorico(kwh, preco, total);
     }
 
     function adicionarHistorico(kwh, preco, total) {
@@ -455,9 +419,7 @@
       document.getElementById('preco').value   = '';
       document.getElementById('bateria').value = '';
       document.getElementById('consumo').value = '';
-      document.getElementById('kwh-error').style.display   = 'none';
-      document.getElementById('preco-error').style.display = 'none';
-      document.getElementById('results').style.display = 'none';
+      document.getElementById('res-total').textContent  = '—';
       document.getElementById('res-alcance').textContent = '—';
     }
 
@@ -466,10 +428,6 @@
       renderHistorico();
     }
 
-    // Calcular ao pressionar Enter
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Enter') calcular();
-    });
   </script>
 </body>
 </html>
