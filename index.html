@@ -706,7 +706,7 @@
     // ── Limpar por secção ──
     function limparAlcance() {
       document.getElementById('consumo').value = '';
-      document.getElementById('bateria').value = '80.7';
+      document.getElementById('bateria').value = '';
       document.getElementById('res-alcance').textContent = '—';
     }
 
@@ -716,8 +716,7 @@
     }
 
     function limparTempo() {
-      ['perc-restante','perc-final','velocidade'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('bateria-tempo').value = '80.7';
+      ['perc-restante','perc-final','velocidade','bateria-tempo'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('res-energia-tempo').textContent = '—';
       document.getElementById('res-tempo').textContent = '—';
       document.getElementById('res-kw-amp').textContent = '';
