@@ -389,6 +389,7 @@
           </div>
           <ul class="history-list" id="hist-alcance-list"></ul>
         </div>
+        <button class="btn-secondary" onclick="limparAlcance()">Limpar campos</button>
       </div>
     </div>
 
@@ -427,6 +428,7 @@
           </div>
           <ul class="history-list" id="hist-custo-list"></ul>
         </div>
+        <button class="btn-secondary" onclick="limparCusto()">Limpar campos</button>
       </div>
     </div>
 
@@ -498,11 +500,11 @@
           </div>
           <ul class="history-list" id="hist-tempo-list"></ul>
         </div>
+        <button class="btn-secondary" onclick="limparTempo()">Limpar campos</button>
       </div>
     </div>
 
     <button class="btn-curve" onclick="abrirModal()">⚡ Curva de Carregamento</button>
-    <button class="btn-secondary" onclick="limpar()">Limpar campos</button>
 
     <div class="version">
       <span></span>
@@ -701,14 +703,24 @@
 
     function limparHistoricoTempo() { histTempo.length = 0; renderHistoricoTempo(); }
 
-    // ── Limpar tudo ──
-    function limpar() {
-      ['kwh','preco','consumo','perc-restante','perc-final','velocidade']
-        .forEach(id => document.getElementById(id).value = '');
-      document.getElementById('bateria').value       = '80.7';
+    // ── Limpar por secção ──
+    function limparAlcance() {
+      document.getElementById('consumo').value = '';
+      document.getElementById('bateria').value = '80.7';
+      document.getElementById('res-alcance').textContent = '—';
+    }
+
+    function limparCusto() {
+      ['kwh','preco'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('res-total').textContent = '—';
+    }
+
+    function limparTempo() {
+      ['perc-restante','perc-final','velocidade'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('bateria-tempo').value = '80.7';
-      ['res-total','res-alcance','res-energia-tempo','res-tempo']
-        .forEach(id => document.getElementById(id).textContent = '—');
+      document.getElementById('res-energia-tempo').textContent = '—';
+      document.getElementById('res-tempo').textContent = '—';
+      document.getElementById('res-kw-amp').textContent = '';
     }
 
     // ── Curva de carregamento ──
