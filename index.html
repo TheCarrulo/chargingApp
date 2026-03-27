@@ -514,29 +514,29 @@
         <div class="form-group">
           <label for="taxa-iva">Taxa de IVA</label>
           <div class="input-wrapper">
-            <input type="number" id="taxa-iva" value="23" min="0" step="1" oninput="calcularIva()" />
+            <input type="number" id="taxa-iva" value="23" min="0" step="1" oninput="calcularIva(null)" />
             <span class="unit">%</span>
           </div>
         </div>
         <div class="form-group">
           <label for="valor-sem-iva">Valor sem IVA</label>
           <div class="input-wrapper">
-            <input type="number" id="valor-sem-iva" placeholder="Ex: 100" min="0" step="0.01" oninput="calcularIva()" />
+            <input type="number" id="valor-sem-iva" placeholder="Ex: 100" min="0" step="0.01" oninput="calcularIva('sem')" />
+            <span class="unit">€</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="valor-com-iva">Valor com IVA</label>
+          <div class="input-wrapper">
+            <input type="number" id="valor-com-iva" placeholder="Ex: 123" min="0" step="0.01" oninput="calcularIva('com')" />
             <span class="unit">€</span>
           </div>
         </div>
         <div class="form-group">
           <label>Valor do IVA</label>
-          <div class="result-card">
-            <span class="label">Valor × Taxa</span>
-            <span class="value" id="res-iva" style="color:#fff">—</span>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Total com IVA</label>
           <div class="result-card result-total">
-            <span class="label">Valor + IVA</span>
-            <span class="value" id="res-total-iva">—</span>
+            <span class="label">Valor × Taxa</span>
+            <span class="value" id="res-iva">—</span>
           </div>
         </div>
         <button class="btn-secondary" onclick="limparIva()">Limpar campos</button>
@@ -743,24 +743,37 @@
     function limparHistoricoTempo() { histTempo.length = 0; renderHistoricoTempo(); }
 
     // ── IVA ──
-    function calcularIva() {
+    function calcularIva(origem) {
       const taxa = parseFloat(document.getElementById('taxa-iva').value);
-      const valor = parseFloat(document.getElementById('valor-sem-iva').value);
-      if (taxa >= 0 && valor > 0) {
-        const iva = valor * taxa / 100;
-        document.getElementById('res-iva').textContent = fmt(iva);
-        document.getElementById('res-total-iva').textContent = fmt(valor + iva);
-      } else {
-        document.getElementById('res-iva').textContent = '—';
-        document.getElementById('res-total-iva').textContent = '—';
+      if (!(taxa >= 0)) { document.getElementById('res-iva').textContent = '—'; return; }
+      const mult = 1 + taxa / 100;
+
+      if (origem === 'sem' || (origem === null && document.getElementById('valor-sem-iva').value !== '')) {
+        const sem = parseFloat(document.getElementById('valor-sem-iva').value);
+        if (sem > 0) {
+          const com = sem * mult;
+          document.getElementById('valor-com-iva').value = com.toFixed(2);
+          document.getElementById('res-iva').textContent = fmt(com - sem);
+        } else {
+          document.getElementById('valor-com-iva').value = '';
+          document.getElementById('res-iva').textContent = '—';
+        }
+      } else if (origem === 'com') {
+        const com = parseFloat(document.getElementById('valor-com-iva').value);
+        if (com > 0) {
+          const sem = com / mult;
+          document.getElementById('valor-sem-iva').value = sem.toFixed(2);
+          document.getElementById('res-iva').textContent = fmt(com - sem);
+        } else {
+          document.getElementById('valor-sem-iva').value = '';
+          document.getElementById('res-iva').textContent = '—';
+        }
       }
     }
 
     function limparIva() {
-      document.getElementById('valor-sem-iva').value = '';
-      document.getElementById('taxa-iva').value = '23';
+      ['valor-sem-iva','valor-com-iva','taxa-iva'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('res-iva').textContent = '—';
-      document.getElementById('res-total-iva').textContent = '—';
     }
 
     // ── Limpar por secção ──
