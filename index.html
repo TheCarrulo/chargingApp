@@ -504,12 +504,51 @@
       </div>
     </div>
 
+    <!-- Secção 4: IVA -->
+    <div class="section" id="sec-iva">
+      <div class="section-header" onclick="toggleSection('sec-iva')">
+        <span class="sec-title">Calcular IVA</span>
+        <span class="sec-arrow">▼</span>
+      </div>
+      <div class="section-body">
+        <div class="form-group">
+          <label for="taxa-iva">Taxa de IVA</label>
+          <div class="input-wrapper">
+            <input type="number" id="taxa-iva" value="23" min="0" step="1" oninput="calcularIva()" />
+            <span class="unit">%</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="valor-sem-iva">Valor sem IVA</label>
+          <div class="input-wrapper">
+            <input type="number" id="valor-sem-iva" placeholder="Ex: 100" min="0" step="0.01" oninput="calcularIva()" />
+            <span class="unit">€</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Valor do IVA</label>
+          <div class="result-card">
+            <span class="label">Valor × Taxa</span>
+            <span class="value" id="res-iva" style="color:#fff">—</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Total com IVA</label>
+          <div class="result-card result-total">
+            <span class="label">Valor + IVA</span>
+            <span class="value" id="res-total-iva">—</span>
+          </div>
+        </div>
+        <button class="btn-secondary" onclick="limparIva()">Limpar campos</button>
+      </div>
+    </div>
+
     <button class="btn-curve" onclick="abrirModal()">⚡ Curva de Carregamento</button>
 
     <div class="version">
       <span></span>
       <a href="https://www.linkedin.com/in/brunocarrulo/" target="_blank" rel="noopener">Made by Bruno Carrulo</a>
-      <span>v1.13</span>
+      <span>v1.14</span>
     </div>
   </div>
 
@@ -702,6 +741,27 @@
     }
 
     function limparHistoricoTempo() { histTempo.length = 0; renderHistoricoTempo(); }
+
+    // ── IVA ──
+    function calcularIva() {
+      const taxa = parseFloat(document.getElementById('taxa-iva').value);
+      const valor = parseFloat(document.getElementById('valor-sem-iva').value);
+      if (taxa >= 0 && valor > 0) {
+        const iva = valor * taxa / 100;
+        document.getElementById('res-iva').textContent = fmt(iva);
+        document.getElementById('res-total-iva').textContent = fmt(valor + iva);
+      } else {
+        document.getElementById('res-iva').textContent = '—';
+        document.getElementById('res-total-iva').textContent = '—';
+      }
+    }
+
+    function limparIva() {
+      document.getElementById('valor-sem-iva').value = '';
+      document.getElementById('taxa-iva').value = '23';
+      document.getElementById('res-iva').textContent = '—';
+      document.getElementById('res-total-iva').textContent = '—';
+    }
 
     // ── Limpar por secção ──
     function limparAlcance() {
