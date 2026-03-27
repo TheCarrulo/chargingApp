@@ -521,14 +521,14 @@
         <div class="form-group">
           <label for="valor-sem-iva">Valor sem IVA</label>
           <div class="input-wrapper">
-            <input type="number" id="valor-sem-iva" placeholder="Ex: 100" min="0" step="0.01" oninput="calcularIva('sem')" />
+            <input type="number" id="valor-sem-iva" placeholder="Ex: 100" min="0" step="0.01" oninput="calcularIva('sem')" onblur="registarHistoricoIva()" />
             <span class="unit">€</span>
           </div>
         </div>
         <div class="form-group">
           <label for="valor-com-iva">Valor com IVA</label>
           <div class="input-wrapper">
-            <input type="number" id="valor-com-iva" placeholder="Ex: 123" min="0" step="0.01" oninput="calcularIva('com')" />
+            <input type="number" id="valor-com-iva" placeholder="Ex: 123" min="0" step="0.01" oninput="calcularIva('com')" onblur="registarHistoricoIva()" />
             <span class="unit">€</span>
           </div>
         </div>
@@ -538,6 +538,13 @@
             <span class="label">Valor × Taxa</span>
             <span class="value" id="res-iva">—</span>
           </div>
+        </div>
+        <div class="hist-wrap" id="hist-iva">
+          <div class="hist-header">
+            <span class="hist-label">Histórico</span>
+            <button class="clear-history" onclick="limparHistoricoIva()">Limpar</button>
+          </div>
+          <ul class="history-list" id="hist-iva-list"></ul>
         </div>
         <button class="btn-secondary" onclick="limparIva()">Limpar campos</button>
       </div>
@@ -770,6 +777,35 @@
         }
       }
     }
+
+    const histIva = [];
+
+    function registarHistoricoIva() {
+      const taxa = parseFloat(document.getElementById('taxa-iva').value);
+      const sem  = parseFloat(document.getElementById('valor-sem-iva').value);
+      const com  = parseFloat(document.getElementById('valor-com-iva').value);
+      if (!(taxa >= 0) || !(sem > 0) || !(com > 0)) return;
+      const iva = com - sem;
+      const last = histIva[0];
+      if (last && last.sem === sem && last.com === com && last.taxa === taxa) return;
+      histIva.unshift({ taxa, sem, com, iva, hora: hora() });
+      if (histIva.length > 10) histIva.pop();
+      renderHistoricoIva();
+    }
+
+    function renderHistoricoIva() {
+      const wrap = document.getElementById('hist-iva');
+      const list = document.getElementById('hist-iva-list');
+      if (histIva.length === 0) { wrap.classList.remove('visible'); return; }
+      wrap.classList.add('visible');
+      list.innerHTML = histIva.map(h => `
+        <li class="history-item">
+          <span class="meta">${h.hora} · ${fmt(h.sem)} + ${h.taxa}% IVA</span>
+          <span class="val">${fmt(h.com)}</span>
+        </li>`).join('');
+    }
+
+    function limparHistoricoIva() { histIva.length = 0; renderHistoricoIva(); }
 
     function limparIva() {
       ['valor-sem-iva','valor-com-iva','taxa-iva'].forEach(id => document.getElementById(id).value = '');
