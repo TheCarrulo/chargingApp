@@ -946,8 +946,9 @@
       res.style.display = 'block';
       const ritmoContrato = kmLimite > 0 ? Math.round(kmLimite / totalMeses).toLocaleString('pt-PT') : null;
       document.getElementById('res-ritmo').textContent =
-        Math.round(ritmoMensal).toLocaleString('pt-PT') + ' km/mês'
-        + (ritmoContrato ? ' / ' + ritmoContrato : '');
+        Math.round(ritmoMensal).toLocaleString('pt-PT')
+        + (ritmoContrato ? ' / ' + ritmoContrato : '')
+        + ' km/mês';
       document.getElementById('res-meses').textContent =
         `${mesesDecorridosDisplay} / ${mesesRestantesDisplay} / ${totalMeses}`;
 
