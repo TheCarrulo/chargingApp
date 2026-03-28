@@ -292,6 +292,42 @@
       background: rgba(126,232,250,0.15);
       color: #7ee8fa;
     }
+    input[type="date"] {
+      width: 100%;
+      padding: 13px 14px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      color-scheme: dark;
+    }
+
+    input[type="date"]:focus {
+      border-color: #7ee8fa;
+      background: rgba(126,232,250,0.08);
+    }
+
+    .status-bar {
+      height: 8px;
+      border-radius: 4px;
+      margin-top: 10px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+
+    .status-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.4s ease, background 0.4s ease;
+    }
+
+    .status-verde  { color: #80ff72; }
+    .status-amarelo { color: #ffd166; }
+    .status-vermelho { color: #ff6b6b; }
+
     .modal-overlay {
       display: none;
       position: fixed;
@@ -550,12 +586,68 @@
       </div>
     </div>
 
+    <!-- Secção 5: Estimativa de Km do Contrato -->
+    <div class="section" id="sec-contrato">
+      <div class="section-header" onclick="toggleSection('sec-contrato')">
+        <span class="sec-title">Estimativa Km do Contrato</span>
+        <span class="sec-arrow">▼</span>
+      </div>
+      <div class="section-body">
+        <div class="form-group">
+          <label for="data-inicio">Data de início do contrato</label>
+          <input type="date" id="data-inicio" oninput="calcularContrato()" />
+        </div>
+        <div class="form-group">
+          <label for="data-fim">Data de fim do contrato</label>
+          <input type="date" id="data-fim" oninput="calcularContrato()" />
+        </div>
+        <div class="form-group">
+          <label for="km-atuais">Km atuais</label>
+          <div class="input-wrapper">
+            <input type="number" id="km-atuais" placeholder="Ex: 15000" min="0" step="1" oninput="calcularContrato()" />
+            <span class="unit">km</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="km-limite">Limite de km do contrato</label>
+          <div class="input-wrapper">
+            <input type="number" id="km-limite" placeholder="Ex: 60000" min="0" step="1" oninput="calcularContrato()" />
+            <span class="unit">km</span>
+          </div>
+        </div>
+
+        <div id="res-contrato" style="display:none;">
+          <div class="result-card" style="margin-bottom:8px;">
+            <span class="label">Ritmo mensal</span>
+            <span class="value" id="res-ritmo" style="color:#fff">—</span>
+          </div>
+          <div class="result-card" style="margin-bottom:8px;">
+            <span class="label">Meses decorridos / restantes</span>
+            <span class="value" id="res-meses" style="color:#fff">—</span>
+          </div>
+          <div class="result-card" style="margin-bottom:8px;">
+            <span class="label">Km estimados no final</span>
+            <span class="value" id="res-km-final" style="color:#fff">—</span>
+          </div>
+          <div class="result-card result-total">
+            <span class="label" id="res-estado-label">Estado</span>
+            <span class="value" id="res-estado">—</span>
+          </div>
+          <div class="status-bar">
+            <div class="status-bar-fill" id="status-bar-fill"></div>
+          </div>
+        </div>
+
+        <button class="btn-secondary" onclick="limparContrato()" style="margin-top:12px;">Limpar campos</button>
+      </div>
+    </div>
+
     <button class="btn-curve" onclick="abrirModal()">⚡ Curva de Carregamento</button>
 
     <div class="version">
       <span></span>
       <a href="https://www.linkedin.com/in/brunocarrulo/" target="_blank" rel="noopener">Made by Bruno Carrulo</a>
-      <span>v1.14</span>
+      <span>v1.15</span>
     </div>
   </div>
 
@@ -810,6 +902,84 @@
     function limparIva() {
       ['valor-sem-iva','valor-com-iva','taxa-iva'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('res-iva').textContent = '—';
+    }
+
+    // ── Contrato ──
+    function calcularContrato() {
+      const inicio  = document.getElementById('data-inicio').value;
+      const fim     = document.getElementById('data-fim').value;
+      const kmAtuais = parseFloat(document.getElementById('km-atuais').value);
+      const kmLimite = parseFloat(document.getElementById('km-limite').value);
+      const res = document.getElementById('res-contrato');
+
+      if (!inicio || !fim || !(kmAtuais > 0)) { res.style.display = 'none'; return; }
+
+      const hoje      = new Date();
+      const dInicio   = new Date(inicio);
+      const dFim      = new Date(fim);
+
+      if (dFim <= dInicio || hoje < dInicio) { res.style.display = 'none'; return; }
+
+      const msDay = 1000 * 60 * 60 * 24;
+      const totalDias      = (dFim - dInicio) / msDay;
+      const diasDecorridos = Math.max((hoje - dInicio) / msDay, 1);
+      const diasRestantes  = Math.max((dFim - hoje) / msDay, 0);
+      const avgDiasMes     = 30.44;
+
+      const mesesDecorridos = diasDecorridos / avgDiasMes;
+      const mesesRestantes  = diasRestantes  / avgDiasMes;
+      const ritmoMensal     = kmAtuais / mesesDecorridos;
+      const kmFinal         = kmAtuais + mesesRestantes * ritmoMensal;
+
+      res.style.display = 'block';
+      document.getElementById('res-ritmo').textContent =
+        Math.round(ritmoMensal).toLocaleString('pt-PT') + ' km/mês';
+      document.getElementById('res-meses').textContent =
+        `${Math.floor(mesesDecorridos)} dec. · ${Math.ceil(mesesRestantes)} rest.`;
+
+      const kmFinalFmt = Math.round(kmFinal).toLocaleString('pt-PT') + ' km';
+      const elFinal = document.getElementById('res-km-final');
+      const elEstado = document.getElementById('res-estado');
+      const elEstadoLabel = document.getElementById('res-estado-label');
+      const fill = document.getElementById('status-bar-fill');
+
+      elFinal.textContent = kmFinalFmt;
+
+      if (kmLimite > 0) {
+        const pct = Math.min((kmFinal / kmLimite) * 100, 100);
+        const excesso = kmFinal - kmLimite;
+        fill.style.width = pct + '%';
+
+        if (kmFinal <= kmLimite * 0.9) {
+          fill.style.background = '#80ff72';
+          elFinal.className = 'value status-verde';
+          elEstado.className = 'value status-verde';
+          elEstado.textContent = 'Dentro do limite';
+          elEstadoLabel.textContent = `Margem: ${Math.round(kmLimite - kmFinal).toLocaleString('pt-PT')} km`;
+        } else if (kmFinal <= kmLimite) {
+          fill.style.background = '#ffd166';
+          elFinal.className = 'value status-amarelo';
+          elEstado.className = 'value status-amarelo';
+          elEstado.textContent = 'Atenção — perto do limite';
+          elEstadoLabel.textContent = `Margem: ${Math.round(kmLimite - kmFinal).toLocaleString('pt-PT')} km`;
+        } else {
+          fill.style.background = '#ff6b6b';
+          elFinal.className = 'value status-vermelho';
+          elEstado.className = 'value status-vermelho';
+          elEstado.textContent = `Excede o limite`;
+          elEstadoLabel.textContent = `Excesso: +${Math.round(excesso).toLocaleString('pt-PT')} km`;
+        }
+      } else {
+        fill.style.width = '0%';
+        elEstado.textContent = '—';
+        elEstadoLabel.textContent = 'Estado';
+        elFinal.className = 'value';
+      }
+    }
+
+    function limparContrato() {
+      ['data-inicio','data-fim','km-atuais','km-limite'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('res-contrato').style.display = 'none';
     }
 
     // ── Limpar por secção ──
