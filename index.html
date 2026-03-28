@@ -595,11 +595,11 @@
       <div class="section-body">
         <div class="form-group">
           <label for="data-inicio">Data de início do contrato</label>
-          <input type="date" id="data-inicio" oninput="calcularContrato()" />
+          <input type="date" id="data-inicio" value="2023-12-21" oninput="calcularContrato()" />
         </div>
         <div class="form-group">
           <label for="data-fim">Data de fim do contrato</label>
-          <input type="date" id="data-fim" oninput="calcularContrato()" />
+          <input type="date" id="data-fim" value="2028-12-28" oninput="calcularContrato()" />
         </div>
         <div class="form-group">
           <label for="km-atuais">Km atuais</label>
@@ -611,7 +611,7 @@
         <div class="form-group">
           <label for="km-limite">Limite de km do contrato</label>
           <div class="input-wrapper">
-            <input type="number" id="km-limite" placeholder="Ex: 60000" min="0" step="1" oninput="calcularContrato()" />
+            <input type="number" id="km-limite" value="100000" min="0" step="1" oninput="calcularContrato()" />
             <span class="unit">km</span>
           </div>
         </div>
@@ -638,7 +638,10 @@
           </div>
         </div>
 
-        <button class="btn-secondary" onclick="limparContrato()" style="margin-top:12px;">Limpar campos</button>
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <button class="btn-secondary" onclick="limparContrato()" style="margin-top:0;">Limpar</button>
+          <button class="btn-secondary" onclick="resetContrato()" style="margin-top:0;">Reset</button>
+        </div>
       </div>
     </div>
 
@@ -980,6 +983,14 @@
     function limparContrato() {
       ['data-inicio','data-fim','km-atuais','km-limite'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('res-contrato').style.display = 'none';
+    }
+
+    function resetContrato() {
+      document.getElementById('data-inicio').value = '2023-12-21';
+      document.getElementById('data-fim').value    = '2028-12-28';
+      document.getElementById('km-atuais').value   = '';
+      document.getElementById('km-limite').value   = '100000';
+      calcularContrato();
     }
 
     // ── Limpar por secção ──
