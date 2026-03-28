@@ -923,26 +923,31 @@
 
       if (dFim <= dInicio || hoje < dInicio) { res.style.display = 'none'; return; }
 
-      // Total de meses do contrato — calculado uma única vez, calendário puro
+      // Total de meses do contrato — calendário puro, inteiro, sem arredondamentos
       const totalMeses = (dFim.getFullYear() - dInicio.getFullYear()) * 12
                        + (dFim.getMonth()    - dInicio.getMonth());
 
-      // Meses decorridos: floor do calendário; restantes = total − decorridos (nunca independente)
-      const mesesDecorridos = Math.min(
+      // Display: inteiros de calendário, restantes = total − decorridos (sempre consistente)
+      const mesesDecorridosDisplay = Math.min(
         (hoje.getFullYear() - dInicio.getFullYear()) * 12 + (hoje.getMonth() - dInicio.getMonth()),
         totalMeses
       );
-      const mesesRestantes = totalMeses - mesesDecorridos;
+      const mesesRestantesDisplay = totalMeses - mesesDecorridosDisplay;
 
-      // Ritmo e projeção usam os mesmos inteiros apresentados
-      const ritmoMensal = kmAtuais / Math.max(mesesDecorridos, 1);
-      const kmFinal     = kmAtuais + mesesRestantes * ritmoMensal;
+      // Cálculo: dias reais para máxima precisão (cada lado calculado de forma independente)
+      const msDay = 1000 * 60 * 60 * 24;
+      const avgDiasMes = 30.44;
+      const mesesDecorridosCalc = Math.max((hoje   - dInicio) / (msDay * avgDiasMes), 0.1);
+      const mesesRestantesCalc  = Math.max((dFim   - hoje)   / (msDay * avgDiasMes), 0);
+
+      const ritmoMensal = kmAtuais / mesesDecorridosCalc;
+      const kmFinal     = kmAtuais + mesesRestantesCalc * ritmoMensal;
 
       res.style.display = 'block';
       document.getElementById('res-ritmo').textContent =
         Math.round(ritmoMensal).toLocaleString('pt-PT') + ' km/mês';
       document.getElementById('res-meses').textContent =
-        `${mesesDecorridos} dec. · ${mesesRestantes} rest.`;
+        `${mesesDecorridosDisplay} / ${mesesRestantesDisplay}`;
 
       const kmFinalFmt = Math.round(kmFinal).toLocaleString('pt-PT') + ' km';
       const elFinal = document.getElementById('res-km-final');
