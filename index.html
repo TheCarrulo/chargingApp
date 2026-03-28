@@ -425,7 +425,10 @@
           </div>
           <ul class="history-list" id="hist-alcance-list"></ul>
         </div>
-        <button class="btn-secondary" onclick="limparAlcance()">Limpar campos</button>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-secondary" onclick="limparAlcance()" style="margin-top:0;">Limpar</button>
+          <button class="btn-secondary" onclick="resetAlcance()" style="margin-top:0;">Reset</button>
+        </div>
       </div>
     </div>
 
@@ -536,7 +539,10 @@
           </div>
           <ul class="history-list" id="hist-tempo-list"></ul>
         </div>
-        <button class="btn-secondary" onclick="limparTempo()">Limpar campos</button>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-secondary" onclick="limparTempo()" style="margin-top:0;">Limpar</button>
+          <button class="btn-secondary" onclick="resetTempo()" style="margin-top:0;">Reset</button>
+        </div>
       </div>
     </div>
 
@@ -582,7 +588,10 @@
           </div>
           <ul class="history-list" id="hist-iva-list"></ul>
         </div>
-        <button class="btn-secondary" onclick="limparIva()">Limpar campos</button>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-secondary" onclick="limparIva()" style="margin-top:0;">Limpar</button>
+          <button class="btn-secondary" onclick="resetIva()" style="margin-top:0;">Reset</button>
+        </div>
       </div>
     </div>
 
@@ -650,7 +659,7 @@
     <div class="version">
       <span></span>
       <a href="https://www.linkedin.com/in/brunocarrulo/" target="_blank" rel="noopener">Made by Bruno Carrulo</a>
-      <span>v1.15</span>
+      <span>v1.15.1</span>
     </div>
   </div>
 
@@ -907,6 +916,12 @@
       document.getElementById('res-iva').textContent = '—';
     }
 
+    function resetIva() {
+      document.getElementById('taxa-iva').value = '23';
+      ['valor-sem-iva','valor-com-iva'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('res-iva').textContent = '—';
+    }
+
     // ── Contrato ──
     function calcularContrato() {
       const inicio  = document.getElementById('data-inicio').value;
@@ -1012,6 +1027,12 @@
       document.getElementById('res-alcance').textContent = '—';
     }
 
+    function resetAlcance() {
+      document.getElementById('bateria').value = '80.7';
+      document.getElementById('consumo').value = '';
+      document.getElementById('res-alcance').textContent = '—';
+    }
+
     function limparCusto() {
       ['kwh','preco'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('res-total').textContent = '—';
@@ -1019,6 +1040,14 @@
 
     function limparTempo() {
       ['perc-restante','perc-final','velocidade','bateria-tempo'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('res-energia-tempo').textContent = '—';
+      document.getElementById('res-tempo').textContent = '—';
+      document.getElementById('res-kw-amp').textContent = '';
+    }
+
+    function resetTempo() {
+      document.getElementById('bateria-tempo').value = '80.7';
+      ['perc-restante','perc-final','velocidade'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('res-energia-tempo').textContent = '—';
       document.getElementById('res-tempo').textContent = '—';
       document.getElementById('res-kw-amp').textContent = '';
