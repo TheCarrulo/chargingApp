@@ -917,28 +917,34 @@
 
       if (!inicio || !fim || !(kmAtuais > 0)) { res.style.display = 'none'; return; }
 
-      const hoje      = new Date();
-      const dInicio   = new Date(inicio);
-      const dFim      = new Date(fim);
+      const hoje    = new Date();
+      const dInicio = new Date(inicio);
+      const dFim    = new Date(fim);
 
       if (dFim <= dInicio || hoje < dInicio) { res.style.display = 'none'; return; }
 
-      const msDay = 1000 * 60 * 60 * 24;
-      const totalDias      = (dFim - dInicio) / msDay;
-      const diasDecorridos = Math.max((hoje - dInicio) / msDay, 1);
-      const diasRestantes  = Math.max((dFim - hoje) / msDay, 0);
-      const avgDiasMes     = 30.44;
+      // Total de meses do contrato — calculado uma única vez, sem arredondamentos intermédios
+      const totalMeses = (dFim.getFullYear() - dInicio.getFullYear()) * 12
+                       + (dFim.getMonth()    - dInicio.getMonth());
 
-      const mesesDecorridos = diasDecorridos / avgDiasMes;
-      const mesesRestantes  = diasRestantes  / avgDiasMes;
-      const ritmoMensal     = kmAtuais / mesesDecorridos;
-      const kmFinal         = kmAtuais + mesesRestantes * ritmoMensal;
+      // Meses decorridos (precisão para cálculos) e display (floor)
+      const msDay = 1000 * 60 * 60 * 24;
+      const avgDiasMes = 30.44;
+      const mesesDecorridosPreciso = Math.max((hoje - dInicio) / (msDay * avgDiasMes), 0.1);
+      const mesesDecorridosDisplay = Math.min(Math.floor(mesesDecorridosPreciso), totalMeses);
+
+      // Restantes = sempre total − decorridos (nunca calculado de forma independente)
+      const mesesRestantesDisplay  = totalMeses - mesesDecorridosDisplay;
+      const mesesRestantesPreciso  = totalMeses - mesesDecorridosPreciso;
+
+      const ritmoMensal = kmAtuais / mesesDecorridosPreciso;
+      const kmFinal     = kmAtuais + Math.max(mesesRestantesPreciso, 0) * ritmoMensal;
 
       res.style.display = 'block';
       document.getElementById('res-ritmo').textContent =
         Math.round(ritmoMensal).toLocaleString('pt-PT') + ' km/mês';
       document.getElementById('res-meses').textContent =
-        `${Math.floor(mesesDecorridos)} dec. · ${Math.ceil(mesesRestantes)} rest.`;
+        `${mesesDecorridosDisplay} dec. · ${mesesRestantesDisplay} rest.`;
 
       const kmFinalFmt = Math.round(kmFinal).toLocaleString('pt-PT') + ' km';
       const elFinal = document.getElementById('res-km-final');
