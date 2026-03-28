@@ -46,10 +46,7 @@
       text-transform: uppercase;
       margin-bottom: 8px;
     }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
+    ul { list-style: none; padding: 0; }
     ul li {
       font-size: 0.88rem;
       color: rgba(255,255,255,0.7);
@@ -57,10 +54,7 @@
       border-bottom: 1px solid rgba(255,255,255,0.05);
     }
     ul li:last-child { border-bottom: none; }
-    ul li::before {
-      content: '— ';
-      color: rgba(255,255,255,0.25);
-    }
+    ul li::before { content: '— '; color: rgba(255,255,255,0.25); }
   </style>
 </head>
 <body>
@@ -74,7 +68,8 @@
       <div class="version-tag">v1.15.1</div>
       <ul>
         <li>Botões Limpar / Reset em Alcance, Tempo e IVA</li>
-        <li>Renomeados botões "Limpar campos" para "Limpar"</li>
+        <li>Botões renomeados de "Limpar campos" para "Limpar"</li>
+        <li>Link do changelog na versão (rodapé)</li>
       </ul>
     </div>
 
@@ -82,8 +77,8 @@
       <div class="version-tag">v1.15</div>
       <ul>
         <li>Nova área: Estimativa Km do Contrato</li>
-        <li>Cálculo de ritmo mensal, meses decorridos/restantes/total</li>
-        <li>Indicador visual verde/amarelo/vermelho vs limite</li>
+        <li>Cálculo de ritmo mensal, meses decorridos / restantes / total</li>
+        <li>Indicador visual verde / amarelo / vermelho vs limite</li>
         <li>Botões Limpar e Reset com valores por defeito</li>
       </ul>
     </div>
@@ -109,24 +104,26 @@
     <div class="version-block">
       <div class="version-tag">v1.12</div>
       <ul>
-        <li>Toggle kW / A na velocidade de carregamento</li>
-        <li>Conversão automática A → kW e kW → A</li>
-        <li>Campo de tensão (230V / 400V) em modo Amperes</li>
+        <li>Conversão automática kW → A e A → kW em ambos os modos</li>
+        <li>Campo de tensão (230V / 400V) visível em modo Amperes</li>
+        <li>Modo kW usa sempre 230V para calcular equivalente em A</li>
       </ul>
     </div>
 
     <div class="version-block">
       <div class="version-tag">v1.11</div>
       <ul>
-        <li>Crédito "Made by Bruno Carrulo" com link LinkedIn</li>
-        <li>Favicon personalizado</li>
-        <li>Domínio charging.carrulo.pt</li>
+        <li>Toggle kW / A na velocidade de carregamento</li>
+        <li>Conversão automática A → kW com campo de tensão</li>
       </ul>
     </div>
 
     <div class="version-block">
       <div class="version-tag">v1.10</div>
       <ul>
+        <li>Crédito "Made by Bruno Carrulo" com link LinkedIn</li>
+        <li>Favicon personalizado</li>
+        <li>Domínio charging.carrulo.pt</li>
         <li>Tooltip interativo na curva de carregamento</li>
       </ul>
     </div>
@@ -134,9 +131,55 @@
     <div class="version-block">
       <div class="version-tag">v1.9</div>
       <ul>
-        <li>Histórico por secção</li>
+        <li>Histórico por secção (regista ao sair de cada campo)</li>
         <li>Secções recolhíveis</li>
-        <li>Curva de carregamento BMW i5 eDrive40</li>
+      </ul>
+    </div>
+
+    <div class="version-block">
+      <div class="version-tag">v1.8</div>
+      <ul>
+        <li>Interface reorganizada em secções recolhíveis</li>
+      </ul>
+    </div>
+
+    <div class="version-block">
+      <div class="version-tag">v1.7</div>
+      <ul>
+        <li>Campo de capacidade da bateria separado na secção Tempo</li>
+      </ul>
+    </div>
+
+    <div class="version-block">
+      <div class="version-tag">v1.6</div>
+      <ul>
+        <li>Curva de carregamento BMW i5 eDrive40 (modal com gráfico)</li>
+      </ul>
+    </div>
+
+    <div class="version-block">
+      <div class="version-tag">v1.5</div>
+      <ul>
+        <li>Nova área: Tempo para Carregar</li>
+        <li>Cálculo de energia e tempo com base em percentagens</li>
+      </ul>
+    </div>
+
+    <div class="version-block">
+      <div class="version-tag">v1.4</div>
+      <ul>
+        <li>Capacidade da bateria por defeito: 80,7 kWh</li>
+        <li>Cálculo de alcance em tempo real</li>
+      </ul>
+    </div>
+
+    <div class="version-block">
+      <div class="version-tag">v1.0 – v1.3</div>
+      <ul>
+        <li>Calculadora de custo de carregamento (kWh × €)</li>
+        <li>Cálculo de alcance (bateria / consumo)</li>
+        <li>Moeda alterada para EUR</li>
+        <li>Cálculos em tempo real sem botão Calcular</li>
       </ul>
     </div>
 
