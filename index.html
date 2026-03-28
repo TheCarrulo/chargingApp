@@ -622,7 +622,7 @@
             <span class="value" id="res-ritmo" style="color:#fff">—</span>
           </div>
           <div class="result-card" style="margin-bottom:8px;">
-            <span class="label">Meses decorridos / restantes</span>
+            <span class="label">Meses decorridos / restantes / total</span>
             <span class="value" id="res-meses" style="color:#fff">—</span>
           </div>
           <div class="result-card" style="margin-bottom:8px;">
@@ -944,10 +944,12 @@
       const kmFinal     = kmAtuais + mesesRestantesCalc * ritmoMensal;
 
       res.style.display = 'block';
+      const ritmoContrato = kmLimite > 0 ? Math.round(kmLimite / totalMeses).toLocaleString('pt-PT') : null;
       document.getElementById('res-ritmo').textContent =
-        Math.round(ritmoMensal).toLocaleString('pt-PT') + ' km/mês';
+        Math.round(ritmoMensal).toLocaleString('pt-PT') + ' km/mês'
+        + (ritmoContrato ? ' / ' + ritmoContrato : '');
       document.getElementById('res-meses').textContent =
-        `${mesesDecorridosDisplay} / ${mesesRestantesDisplay}`;
+        `${mesesDecorridosDisplay} / ${mesesRestantesDisplay} / ${totalMeses}`;
 
       const kmFinalFmt = Math.round(kmFinal).toLocaleString('pt-PT') + ' km';
       const elFinal = document.getElementById('res-km-final');
