@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog — Carregamento Elétrico</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 36px;
+      width: 100%;
+      max-width: 520px;
+      color: #fff;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .header { text-align: center; margin-bottom: 28px; }
+    .header h1 { font-size: 1.4rem; font-weight: 700; color: #7ee8fa; }
+    .back {
+      display: inline-block;
+      margin-bottom: 24px;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back:hover { color: #7ee8fa; }
+    .version-block { margin-bottom: 24px; }
+    .version-tag {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #7ee8fa;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    ul li {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.7);
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    ul li:last-child { border-bottom: none; }
+    ul li::before {
+      content: '— ';
+      color: rgba(255,255,255,0.25);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">← Voltar</a>
+    <div class="header">
+      <h1>⚡ Changelog</h1>
+    </div>
+
+    <div class="version-block">
+      <div class="version-tag">v1.15.1</div>
+      <ul>
+        <li>Botões Limpar / Reset em Alcance, Tempo e IVA</li>
+        <li>Renomeados botões "Limpar campos" para "Limpar"</li>
+      </ul>
+    </div>
+
+    <div class="version-block">
+      <div class="version-tag">v1.15</div>
+      <ul>
+        <li>Nova área: Estimativa Km do Contrato</li>
+        <li>Cálculo de ritmo mensal, meses decorridos/restantes/total</li>
+        <li>Indicador visual verde/amarelo/vermelho vs limite</li>
+        <li>Botões Limpar e Reset com valores por defeito</li>
+      </ul>
+    </div>
+
+    <div class="version-block">
+      <div class="version-tag">v1.14</div>
+      <ul>
+        <li>Nova área: Calcular IVA</li>
+        <li>Cálculo bidirecional: valor sem IVA ↔ valor com IVA</li>
+        <li>Taxa configurável (23% por defeito)</li>
+        <li>Histórico de cálculos</li>
+      </ul>
+    </div>
+
+    <div class="version-block">
+      <div class="version-tag">v1.13</div>
+      <ul>
+        <li>Botão Limpar individual em cada secção</li>
+        <li>Removido botão Limpar global</li>
+      </ul>
+    </div>
+
+    <div class="version-block">
+      <div class="version-tag">v1.12</div>
+      <ul>
+        <li>Toggle kW / A na velocidade de carregamento</li>
+        <li>Conversão automática A → kW e kW → A</li>
+        <li>Campo de tensão (230V / 400V) em modo Amperes</li>
+      </ul>
+    </div>
+
+    <div class="version-block">
+      <div class="version-tag">v1.11</div>
+      <ul>
+        <li>Crédito "Made by Bruno Carrulo" com link LinkedIn</li>
+        <li>Favicon personalizado</li>
+        <li>Domínio charging.carrulo.pt</li>
+      </ul>
+    </div>
+
+    <div class="version-block">
+      <div class="version-tag">v1.10</div>
+      <ul>
+        <li>Tooltip interativo na curva de carregamento</li>
+      </ul>
+    </div>
+
+    <div class="version-block">
+      <div class="version-tag">v1.9</div>
+      <ul>
+        <li>Histórico por secção</li>
+        <li>Secções recolhíveis</li>
+        <li>Curva de carregamento BMW i5 eDrive40</li>
+      </ul>
+    </div>
+
+  </div>
+</body>
+</html>
