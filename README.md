@@ -1,6 +1,6 @@
 # ⚡ Calculadora de Carregamento Elétrico
 
-Aplicação web para calcular alcance, custo e tempo de carregamento de veículos elétricos, com calculadora de IVA incluída.
+Aplicação web para calcular alcance, custo e tempo de carregamento de veículos elétricos, com calculadora de IVA e estimativa de km de contrato.
 
 **🌐 [Abrir aplicação](https://charging.carrulo.pt/)**
 
@@ -26,12 +26,20 @@ Aplicação web para calcular alcance, custo e tempo de carregamento de veículo
 - Taxa de IVA configurável (23% por defeito)
 - Mostra o valor do IVA isolado
 
+### Estimativa Km do Contrato
+- Calcula o ritmo mensal atual e o ritmo contratual (limite ÷ total de meses)
+- Mostra meses decorridos / restantes / total
+- Projeta os km estimados no final do contrato
+- Indicador visual verde / amarelo / vermelho consoante a projeção vs limite
+- Valores por defeito configuráveis com botão Reset
+
 ### Outras funcionalidades
 - Histórico por secção (regista ao sair de cada campo)
-- Botão "Limpar campos" individual em cada secção
+- Botões Limpar e Reset individuais em cada secção
 - Curva de carregamento interativa com tooltip ao passar o rato (BMW i5 eDrive40)
 - Todas as secções são recolhíveis
 - Cálculos em tempo real
+- Changelog acessível ao clicar na versão (rodapé)
 
 ---
 
