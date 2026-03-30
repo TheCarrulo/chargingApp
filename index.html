@@ -432,6 +432,52 @@
       </div>
     </div>
 
+    <!-- Secção 1b: Previsão Autonomia -->
+    <div class="section" id="sec-autonomia">
+      <div class="section-header" onclick="toggleSection('sec-autonomia')">
+        <span class="sec-title">Previsão Autonomia</span>
+        <span class="sec-arrow">▼</span>
+      </div>
+      <div class="section-body">
+        <div class="form-group">
+          <label for="perc-atual">Percentagem atual</label>
+          <div class="input-wrapper">
+            <input type="number" id="perc-atual" placeholder="Ex: 80" min="1" max="100" step="1" oninput="calcularAutonomia()" />
+            <span class="unit">%</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="km-indicados">Km indicados</label>
+          <div class="input-wrapper">
+            <input type="number" id="km-indicados" placeholder="Ex: 337" min="0" step="1" oninput="calcularAutonomia()" />
+            <span class="unit">km</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="perc-alvo">Percentagem alvo</label>
+          <div class="input-wrapper">
+            <input type="number" id="perc-alvo" placeholder="Ex: 100" min="1" max="100" step="1" oninput="calcularAutonomia()" />
+            <span class="unit">%</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Autonomia estimada</label>
+          <div class="result-card result-total">
+            <span class="label" id="res-autonomia-label">km indicados ÷ % atual × % alvo</span>
+            <span class="value" id="res-autonomia">—</span>
+          </div>
+        </div>
+        <div class="hist-wrap" id="hist-autonomia">
+          <div class="hist-header">
+            <span class="hist-label">Histórico</span>
+            <button class="clear-history" onclick="limparHistoricoAutonomia()">Limpar</button>
+          </div>
+          <ul class="history-list" id="hist-autonomia-list"></ul>
+        </div>
+        <button class="btn-secondary" onclick="limparAutonomia()">Limpar</button>
+      </div>
+    </div>
+
     <!-- Secção 2: Custo -->
     <div class="section" id="sec-custo">
       <div class="section-header" onclick="toggleSection('sec-custo')">
@@ -659,7 +705,7 @@
     <div class="version">
       <span></span>
       <a href="https://www.linkedin.com/in/brunocarrulo/" target="_blank" rel="noopener">Made by Bruno Carrulo</a>
-      <a href="changelog.html" style="color:rgba(255,255,255,0.2); text-decoration:none;" onmouseover="this.style.color='#7ee8fa'" onmouseout="this.style.color='rgba(255,255,255,0.2)'">v1.15.1</a>
+      <a href="changelog.html" style="color:rgba(255,255,255,0.2); text-decoration:none;" onmouseover="this.style.color='#7ee8fa'" onmouseout="this.style.color='rgba(255,255,255,0.2)'">v1.16</a>
     </div>
   </div>
 
@@ -713,6 +759,55 @@
     }
 
     function limparHistoricoAlcance() { histAlcance.length = 0; renderHistoricoAlcance(); }
+
+    // ── Previsão Autonomia ──
+    const histAutonomia = [];
+
+    function calcularAutonomia() {
+      const percAtual  = parseFloat(document.getElementById('perc-atual').value);
+      const kmAtual    = parseFloat(document.getElementById('km-indicados').value);
+      const percAlvo   = parseFloat(document.getElementById('perc-alvo').value);
+      const el         = document.getElementById('res-autonomia');
+      const elLabel    = document.getElementById('res-autonomia-label');
+
+      if (percAtual > 0 && kmAtual > 0 && percAlvo > 0) {
+        const kmAlvo = (kmAtual / percAtual) * percAlvo;
+        el.textContent = Math.round(kmAlvo).toLocaleString('pt-PT') + ' km';
+        elLabel.textContent = `${kmAtual} km ÷ ${percAtual}% × ${percAlvo}%`;
+        if (percAtual !== percAlvo) {
+          const h = { percAtual, kmAtual, percAlvo, kmAlvo: Math.round(kmAlvo), hora: hora() };
+          const last = histAutonomia[0];
+          if (!last || last.percAtual !== percAtual || last.kmAtual !== kmAtual || last.percAlvo !== percAlvo) {
+            histAutonomia.unshift(h);
+            if (histAutonomia.length > 10) histAutonomia.pop();
+            renderHistoricoAutonomia();
+          }
+        }
+      } else {
+        el.textContent = '—';
+        elLabel.textContent = 'km indicados ÷ % atual × % alvo';
+      }
+    }
+
+    function renderHistoricoAutonomia() {
+      const wrap = document.getElementById('hist-autonomia');
+      const list = document.getElementById('hist-autonomia-list');
+      if (histAutonomia.length === 0) { wrap.classList.remove('visible'); return; }
+      wrap.classList.add('visible');
+      list.innerHTML = histAutonomia.map(h => `
+        <li class="history-item">
+          <span class="meta">${h.hora} · ${h.kmAtual} km @ ${h.percAtual}% → ${h.percAlvo}%</span>
+          <span class="val">${h.kmAlvo.toLocaleString('pt-PT')} km</span>
+        </li>`).join('');
+    }
+
+    function limparHistoricoAutonomia() { histAutonomia.length = 0; renderHistoricoAutonomia(); }
+
+    function limparAutonomia() {
+      ['perc-atual','km-indicados','perc-alvo'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('res-autonomia').textContent = '—';
+      document.getElementById('res-autonomia-label').textContent = 'km indicados ÷ % atual × % alvo';
+    }
 
     // ── Custo ──
     const histCusto = [];
