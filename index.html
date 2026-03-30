@@ -442,21 +442,21 @@
         <div class="form-group">
           <label for="perc-atual">Percentagem atual</label>
           <div class="input-wrapper">
-            <input type="number" id="perc-atual" placeholder="Ex: 80" min="1" max="100" step="1" oninput="calcularAutonomia()" />
+            <input type="number" id="perc-atual" placeholder="Ex: 80" min="1" max="100" step="1" oninput="calcularAutonomia()" onblur="registarHistoricoAutonomia()" />
             <span class="unit">%</span>
           </div>
         </div>
         <div class="form-group">
           <label for="km-indicados">Km indicados</label>
           <div class="input-wrapper">
-            <input type="number" id="km-indicados" placeholder="Ex: 337" min="0" step="1" oninput="calcularAutonomia()" />
+            <input type="number" id="km-indicados" placeholder="Ex: 337" min="0" step="1" oninput="calcularAutonomia()" onblur="registarHistoricoAutonomia()" />
             <span class="unit">km</span>
           </div>
         </div>
         <div class="form-group">
           <label for="perc-alvo">Percentagem alvo</label>
           <div class="input-wrapper">
-            <input type="number" id="perc-alvo" placeholder="Ex: 100" min="1" max="100" step="1" oninput="calcularAutonomia()" />
+            <input type="number" id="perc-alvo" value="100" min="1" max="100" step="1" oninput="calcularAutonomia()" onblur="registarHistoricoAutonomia()" />
             <span class="unit">%</span>
           </div>
         </div>
@@ -474,7 +474,10 @@
           </div>
           <ul class="history-list" id="hist-autonomia-list"></ul>
         </div>
-        <button class="btn-secondary" onclick="limparAutonomia()">Limpar</button>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-secondary" onclick="limparAutonomia()" style="margin-top:0;">Limpar</button>
+          <button class="btn-secondary" onclick="resetAutonomia()" style="margin-top:0;">Reset</button>
+        </div>
       </div>
     </div>
 
@@ -774,18 +777,24 @@
         const kmAlvo = (kmAtual / percAtual) * percAlvo;
         el.textContent = Math.round(kmAlvo).toLocaleString('pt-PT') + ' km';
         elLabel.textContent = `${kmAtual} km ÷ ${percAtual}% × ${percAlvo}%`;
-        if (percAtual !== percAlvo) {
-          const h = { percAtual, kmAtual, percAlvo, kmAlvo: Math.round(kmAlvo), hora: hora() };
-          const last = histAutonomia[0];
-          if (!last || last.percAtual !== percAtual || last.kmAtual !== kmAtual || last.percAlvo !== percAlvo) {
-            histAutonomia.unshift(h);
-            if (histAutonomia.length > 10) histAutonomia.pop();
-            renderHistoricoAutonomia();
-          }
-        }
       } else {
         el.textContent = '—';
         elLabel.textContent = 'km indicados ÷ % atual × % alvo';
+      }
+    }
+
+    function registarHistoricoAutonomia() {
+      const percAtual = parseFloat(document.getElementById('perc-atual').value);
+      const kmAtual   = parseFloat(document.getElementById('km-indicados').value);
+      const percAlvo  = parseFloat(document.getElementById('perc-alvo').value);
+      if (!(percAtual > 0 && kmAtual > 0 && percAlvo > 0)) return;
+      const kmAlvo = Math.round((kmAtual / percAtual) * percAlvo);
+      const h = { percAtual, kmAtual, percAlvo, kmAlvo, hora: hora() };
+      const last = histAutonomia[0];
+      if (!last || last.percAtual !== percAtual || last.kmAtual !== kmAtual || last.percAlvo !== percAlvo) {
+        histAutonomia.unshift(h);
+        if (histAutonomia.length > 10) histAutonomia.pop();
+        renderHistoricoAutonomia();
       }
     }
 
@@ -807,6 +816,13 @@
       ['perc-atual','km-indicados','perc-alvo'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('res-autonomia').textContent = '—';
       document.getElementById('res-autonomia-label').textContent = 'km indicados ÷ % atual × % alvo';
+    }
+
+    function resetAutonomia() {
+      document.getElementById('perc-atual').value = '';
+      document.getElementById('km-indicados').value = '';
+      document.getElementById('perc-alvo').value = '100';
+      calcularAutonomia();
     }
 
     // ── Custo ──
