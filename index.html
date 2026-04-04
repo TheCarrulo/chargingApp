@@ -400,7 +400,7 @@
         <div class="form-group">
           <label for="bateria">Capacidade da bateria</label>
           <div class="input-wrapper">
-            <input type="number" id="bateria" value="80.7" min="0" step="0.1" oninput="calcularAlcance()" onblur="registarHistoricoAlcance()" />
+            <input type="number" id="bateria" value="82" min="0" step="0.1" oninput="calcularAlcance()" onblur="registarHistoricoAlcance()" />
             <span class="unit">kWh</span>
           </div>
         </div>
@@ -530,7 +530,7 @@
         <div class="form-group">
           <label for="bateria-tempo">Capacidade da bateria</label>
           <div class="input-wrapper">
-            <input type="number" id="bateria-tempo" value="80.7" min="0" step="0.1" oninput="calcularTempo()" />
+            <input type="number" id="bateria-tempo" value="82" min="0" step="0.1" oninput="calcularTempo()" />
             <span class="unit">kWh</span>
           </div>
         </div>
@@ -1145,7 +1145,7 @@
     }
 
     function resetAlcance() {
-      document.getElementById('bateria').value = '80.7';
+      document.getElementById('bateria').value = '82';
       document.getElementById('consumo').value = '';
       document.getElementById('res-alcance').textContent = '—';
     }
@@ -1163,7 +1163,7 @@
     }
 
     function resetTempo() {
-      document.getElementById('bateria-tempo').value = '80.7';
+      document.getElementById('bateria-tempo').value = '82';
       ['perc-restante','perc-final','velocidade'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('res-energia-tempo').textContent = '—';
       document.getElementById('res-tempo').textContent = '—';
