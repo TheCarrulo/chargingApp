@@ -607,6 +607,13 @@
               <div id="res-kw-amp" style="font-size:0.82rem; color:#7ee8fa; margin-top:8px; text-align:right;"></div>
             </div>
             <div class="form-group">
+              <label for="eficiencia">Eficiência do carregamento</label>
+              <div class="input-wrapper">
+                <input type="number" id="eficiencia" value="87.5" min="1" max="100" step="0.5" oninput="calcularTempo()" />
+                <span class="unit">%</span>
+              </div>
+            </div>
+            <div class="form-group">
               <label>Tempo para carregar</label>
               <div class="result-card result-total">
                 <span class="label">Energia ÷ Velocidade</span>
@@ -680,6 +687,13 @@
                 <div style="font-size:0.75rem; color:rgba(255,255,255,0.3); margin-top:5px;">230V monofásico · 400V trifásico</div>
               </div>
               <div id="res-kw-amp2" style="font-size:0.82rem; color:#7ee8fa; margin-top:8px; text-align:right;"></div>
+            </div>
+            <div class="form-group">
+              <label for="eficiencia2">Eficiência do carregamento</label>
+              <div class="input-wrapper">
+                <input type="number" id="eficiencia2" value="87.5" min="1" max="100" step="0.5" oninput="calcularTempoAte()" />
+                <span class="unit">%</span>
+              </div>
             </div>
             <div class="form-group">
               <label for="hora-pretendida">Data e hora pretendida (pronto às)</label>
@@ -1042,8 +1056,9 @@
         const energia = ((percFinal - percRest) / 100) * bateria;
         elEnergia.textContent = energia.toLocaleString('pt-PT', { maximumFractionDigits: 2 }) + ' kWh';
         const velocidadeKw = getVelocidadeKw();
+        const eficiencia = parseFloat(document.getElementById('eficiencia').value) || 100;
         if (velocidadeKw) {
-          const horas = energia / velocidadeKw;
+          const horas = energia / (velocidadeKw * (eficiencia / 100));
           const h = Math.floor(horas);
           const m = Math.round((horas - h) * 60);
           const tempoStr = h > 0 ? `${h}h ${m}min` : `${m}min`;
@@ -1070,7 +1085,8 @@
       const velocidadeRaw = parseFloat(document.getElementById('velocidade').value);
       if (bateria > 0 && percFinal > percRest && percRest >= 0 && velocidadeKw) {
         const energia = ((percFinal - percRest) / 100) * bateria;
-        const horas   = energia / velocidadeKw;
+        const eficienciaH = parseFloat(document.getElementById('eficiencia').value) || 100;
+        const horas   = energia / (velocidadeKw * (eficienciaH / 100));
         const h = Math.floor(horas);
         const m = Math.round((horas - h) * 60);
         const tempoStr = h > 0 ? `${h}h ${m}min` : `${m}min`;
@@ -1149,8 +1165,9 @@
         const energia = ((percFinal - percRest) / 100) * bateria;
         elEnergia.textContent = energia.toLocaleString('pt-PT', { maximumFractionDigits: 2 }) + ' kWh';
         const velocidadeKw = getVelocidadeKw2();
+        const eficiencia2 = parseFloat(document.getElementById('eficiencia2').value) || 100;
         if (velocidadeKw && horaStr) {
-          const horas = energia / velocidadeKw;
+          const horas = energia / (velocidadeKw * (eficiencia2 / 100));
           const h = Math.floor(horas);
           const m = Math.round((horas - h) * 60);
           const duracaoStr = h > 0 ? `${h}h ${m}min` : `${m}min`;
@@ -1185,7 +1202,8 @@
       const velocidadeRaw = parseFloat(document.getElementById('velocidade2').value);
       if (!(bateria > 0 && percFinal > percRest && percRest >= 0 && velocidadeKw && horaStr)) return;
       const energia = ((percFinal - percRest) / 100) * bateria;
-      const horas = energia / velocidadeKw;
+      const eficiencia2h = parseFloat(document.getElementById('eficiencia2').value) || 100;
+      const horas = energia / (velocidadeKw * (eficiencia2h / 100));
       const h = Math.floor(horas);
       const m = Math.round((horas - h) * 60);
       const duracaoStr = h > 0 ? `${h}h ${m}min` : `${m}min`;
@@ -1218,7 +1236,7 @@
     function limparHistoricoTempoAte() { histTempoAte.length = 0; renderHistoricoTempoAte(); }
 
     function limparTempoAte() {
-      ['perc-restante2','perc-final2','velocidade2','bateria-tempo2','hora-pretendida'].forEach(id => document.getElementById(id).value = '');
+      ['perc-restante2','perc-final2','velocidade2','bateria-tempo2','hora-pretendida','eficiencia2'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('res-energia-tempo2').textContent = '—';
       document.getElementById('res-hora-ligar').textContent = '—';
       document.getElementById('res-hora-ligar-label').textContent = 'Hora pretendida − duração';
@@ -1227,6 +1245,7 @@
 
     function resetTempoAte() {
       document.getElementById('bateria-tempo2').value = '82';
+      document.getElementById('eficiencia2').value = '87.5';
       ['perc-restante2','perc-final2','velocidade2','hora-pretendida'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('res-energia-tempo2').textContent = '—';
       document.getElementById('res-hora-ligar').textContent = '—';
@@ -1420,7 +1439,7 @@
     }
 
     function limparTempo() {
-      ['perc-restante','perc-final','velocidade','bateria-tempo'].forEach(id => document.getElementById(id).value = '');
+      ['perc-restante','perc-final','velocidade','bateria-tempo','eficiencia'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('res-energia-tempo').textContent = '—';
       document.getElementById('res-tempo').textContent = '—';
       document.getElementById('res-kw-amp').textContent = '';
@@ -1428,6 +1447,7 @@
 
     function resetTempo() {
       document.getElementById('bateria-tempo').value = '82';
+      document.getElementById('eficiencia').value = '87.5';
       ['perc-restante','perc-final','velocidade'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('res-energia-tempo').textContent = '—';
       document.getElementById('res-tempo').textContent = '—';
