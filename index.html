@@ -822,14 +822,29 @@
     <div class="version">
       <span></span>
       <a href="https://www.linkedin.com/in/brunocarrulo/" target="_blank" rel="noopener" onclick="gtag('event','linkedin_click',{event_category:'footer',event_label:'Made by Bruno Carrulo'})">Made by Bruno Carrulo</a>
-      <a href="changelog.html" style="color:rgba(255,255,255,0.2); text-decoration:none;" onmouseover="this.style.color='#7ee8fa'" onmouseout="this.style.color='rgba(255,255,255,0.2)'">v1.17</a>
+      <a href="changelog.html" style="color:rgba(255,255,255,0.2); text-decoration:none;" onmouseover="this.style.color='#7ee8fa'" onmouseout="this.style.color='rgba(255,255,255,0.2)'" onclick="gtag('event','changelog_click',{event_category:'footer',event_label:'v1.17'})">v1.17</a>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
   <script>
+    const sectionNames = {
+      'sec-alcance':        'Alcance',
+      'sec-autonomia':      'Previsão Autonomia',
+      'sec-custo':          'Custo de Carregamento',
+      'sec-tempo':          'Tempo Carregamento',
+      'sec-tempo-carregar': 'Tempo para Carregar',
+      'sec-tempo-ate':      'Tempo até Carregar',
+      'sec-iva':            'Calcular IVA',
+      'sec-contrato':       'Estimativa Km Contrato'
+    };
+
     function toggleSection(id) {
-      document.getElementById(id).classList.toggle('open');
+      const el = document.getElementById(id);
+      el.classList.toggle('open');
+      if (el.classList.contains('open') && typeof gtag !== 'undefined') {
+        gtag('event', 'section_open', { section: sectionNames[id] || id });
+      }
     }
 
     function fmt(v) { return v.toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' }); }
