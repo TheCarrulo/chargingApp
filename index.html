@@ -79,7 +79,7 @@
       padding: 0 20px;
     }
 
-    .section.open .section-body {
+    .section.open > .section-body {
       max-height: 4000px;
       padding: 20px 20px;
     }
@@ -96,7 +96,7 @@
     .subsection .section-header .sec-title {
       font-size: 0.8rem;
     }
-    .subsection.open .section-body {
+    .subsection.open > .section-body {
       padding: 16px 16px;
     }
 
@@ -308,7 +308,7 @@
       background: rgba(126,232,250,0.15);
       color: #7ee8fa;
     }
-    input[type="date"] {
+    input[type="date"], input[type="datetime-local"] {
       width: 100%;
       padding: 13px 14px;
       background: rgba(255,255,255,0.08);
@@ -321,7 +321,7 @@
       color-scheme: dark;
     }
 
-    input[type="date"]:focus {
+    input[type="date"]:focus, input[type="datetime-local"]:focus {
       border-color: #7ee8fa;
       background: rgba(126,232,250,0.08);
     }
@@ -674,10 +674,8 @@
               <div id="res-kw-amp2" style="font-size:0.82rem; color:#7ee8fa; margin-top:8px; text-align:right;"></div>
             </div>
             <div class="form-group">
-              <label for="hora-pretendida">Hora pretendida (pronto às)</label>
-              <div class="input-wrapper">
-                <input type="time" id="hora-pretendida" oninput="calcularTempoAte()" onblur="registarHistoricoTempoAte()" />
-              </div>
+              <label for="hora-pretendida">Data e hora pretendida (pronto às)</label>
+              <input type="datetime-local" id="hora-pretendida" oninput="calcularTempoAte()" onblur="registarHistoricoTempoAte()" />
             </div>
             <div class="form-group">
               <label>Ligar o carregador às</label>
@@ -1134,26 +1132,16 @@
           const m = Math.round((horas - h) * 60);
           const duracaoStr = h > 0 ? `${h}h ${m}min` : `${m}min`;
 
-          // Calcular hora de início: hora pretendida - duração
-          const [hAlvo, mAlvo] = horaStr.split(':').map(Number);
-          const agora = new Date();
-          const alvo = new Date(agora);
-          alvo.setHours(hAlvo, mAlvo, 0, 0);
+          // Calcular hora de início: hora pretendida (datetime-local) - duração
+          const alvo = new Date(horaStr);
           const inicio = new Date(alvo.getTime() - horas * 3600000);
 
-          const inicioH = String(inicio.getHours()).padStart(2, '0');
-          const inicioM = String(inicio.getMinutes()).padStart(2, '0');
-          const inicioStr = `${inicioH}:${inicioM}`;
+          const pad = n => String(n).padStart(2, '0');
+          const inicioStr = `${pad(inicio.getDate())}/${pad(inicio.getMonth()+1)} ${pad(inicio.getHours())}:${pad(inicio.getMinutes())}`;
+          const alvoStr   = `${pad(alvo.getDate())}/${pad(alvo.getMonth()+1)} ${pad(alvo.getHours())}:${pad(alvo.getMinutes())}`;
 
-          // Se o início é noutro dia, mostrar data
-          const hoje = new Date();
-          let dataExtra = '';
-          if (inicio.getDate() !== hoje.getDate() || inicio.getMonth() !== hoje.getMonth()) {
-            dataExtra = ` (${String(inicio.getDate()).padStart(2,'0')}/${String(inicio.getMonth()+1).padStart(2,'0')})`;
-          }
-
-          elLabel.textContent = `${horaStr} − ${duracaoStr}`;
-          elRes.textContent = `${inicioStr}${dataExtra}`;
+          elLabel.textContent = `${alvoStr} − ${duracaoStr}`;
+          elRes.textContent = inicioStr;
         } else {
           elLabel.textContent = 'Hora pretendida − duração';
           elRes.textContent = '—';
@@ -1178,11 +1166,10 @@
       const h = Math.floor(horas);
       const m = Math.round((horas - h) * 60);
       const duracaoStr = h > 0 ? `${h}h ${m}min` : `${m}min`;
-      const [hAlvo, mAlvo] = horaStr.split(':').map(Number);
-      const alvo = new Date();
-      alvo.setHours(hAlvo, mAlvo, 0, 0);
+      const pad = n => String(n).padStart(2,'0');
+      const alvo = new Date(horaStr);
       const inicio = new Date(alvo.getTime() - horas * 3600000);
-      const inicioStr = `${String(inicio.getHours()).padStart(2,'0')}:${String(inicio.getMinutes()).padStart(2,'0')}`;
+      const inicioStr = `${pad(inicio.getDate())}/${pad(inicio.getMonth()+1)} ${pad(inicio.getHours())}:${pad(inicio.getMinutes())}`;
       const label = modoVelocidade2 === 'kw'
         ? `${velocidadeRaw} kW`
         : `${velocidadeRaw}A × ${document.getElementById('tensao2').value || 230}V`;
