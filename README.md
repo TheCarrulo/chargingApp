@@ -21,10 +21,11 @@ Aplicação web para calcular alcance, custo e tempo de carregamento de veículo
 - Velocidade de carregamento introduzida em **kW** ou **Amperes**
   - Em modo kW mostra o equivalente em A (calculado a 230V)
   - Em modo A mostra o equivalente em kW, com campo de tensão (230V monofásico / 400V trifásico)
+- Campo de eficiência de carregamento (87,5% por defeito) para compensar perdas reais
 - Resultado em horas e minutos com hora estimada de conclusão (ex: `9h 39min / 02/04 15:00`)
 
 #### Tempo até carregar
-- Mesmos campos de velocidade e percentagens
+- Mesmos campos de velocidade, percentagens e eficiência
 - Define a data e hora a que o carro deve estar pronto
 - Calcula a que horas deve ligar o carregador (ex: `05/04 23:21`)
 
