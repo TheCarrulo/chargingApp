@@ -14,12 +14,19 @@ Aplicação web para calcular alcance, custo e tempo de carregamento de veículo
 ### Custo de Carregamento
 - Calcula o custo total com base na energia carregada (kWh) e preço por kWh (€)
 
-### Tempo para Carregar
+### Tempo Carregamento
+
+#### Tempo para carregar
 - Calcula a energia necessária entre duas percentagens de bateria
 - Velocidade de carregamento introduzida em **kW** ou **Amperes**
   - Em modo kW mostra o equivalente em A (calculado a 230V)
   - Em modo A mostra o equivalente em kW, com campo de tensão (230V monofásico / 400V trifásico)
 - Resultado em horas e minutos com hora estimada de conclusão (ex: `9h 39min / 02/04 15:00`)
+
+#### Tempo até carregar
+- Mesmos campos de velocidade e percentagens
+- Define a data e hora a que o carro deve estar pronto
+- Calcula a que horas deve ligar o carregador (ex: `05/04 23:21`)
 
 ### Previsão Autonomia
 - Indica os km estimados a uma percentagem alvo com base na percentagem e km atuais
