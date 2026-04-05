@@ -80,8 +80,24 @@
     }
 
     .section.open .section-body {
-      max-height: 2000px;
+      max-height: 4000px;
       padding: 20px 20px;
+    }
+
+    .subsection {
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+    .subsection .section-header {
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+    }
+    .subsection .section-header .sec-title {
+      font-size: 0.8rem;
+    }
+    .subsection.open .section-body {
+      padding: 16px 16px;
     }
 
     /* ── Form elements ── */
@@ -521,77 +537,169 @@
     </div>
 
     <!-- Secção 3: Tempo -->
-    <div class="section" id="sec-tempo">
+    <div class="section open" id="sec-tempo">
       <div class="section-header" onclick="toggleSection('sec-tempo')">
-        <span class="sec-title">Tempo para Carregar</span>
+        <span class="sec-title">Tempo carregamento</span>
         <span class="sec-arrow">▼</span>
       </div>
       <div class="section-body">
-        <div class="form-group">
-          <label for="bateria-tempo">Capacidade da bateria</label>
-          <div class="input-wrapper">
-            <input type="number" id="bateria-tempo" value="82" min="0" step="0.1" oninput="calcularTempo()" />
-            <span class="unit">kWh</span>
+
+        <!-- Sub-secção 3a: Tempo para carregar -->
+        <div class="section subsection open" id="sec-tempo-carregar">
+          <div class="section-header" onclick="toggleSection('sec-tempo-carregar')">
+            <span class="sec-title">Tempo para carregar</span>
+            <span class="sec-arrow">▼</span>
           </div>
-        </div>
-        <div class="form-group">
-          <label for="perc-restante">Percentagem restante</label>
-          <div class="input-wrapper">
-            <input type="number" id="perc-restante" placeholder="Ex: 20" min="0" max="100" step="1" oninput="calcularTempo()" />
-            <span class="unit">%</span>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="perc-final">Percentagem final</label>
-          <div class="input-wrapper">
-            <input type="number" id="perc-final" placeholder="Ex: 80" min="0" max="100" step="1" oninput="calcularTempo()" />
-            <span class="unit">%</span>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Energia a carregar</label>
-          <div class="result-card">
-            <span class="label">(% final − % restante) × bateria</span>
-            <span class="value" id="res-energia-tempo" style="color:#fff">—</span>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Velocidade de carregamento</label>
-          <div class="toggle-unit">
-            <button id="btn-kw" class="active" onclick="setModoVelocidade('kw')">kW</button>
-            <button id="btn-amp" onclick="setModoVelocidade('amp')">A</button>
-          </div>
-          <div class="input-wrapper">
-            <input type="number" id="velocidade" placeholder="Ex: 11" min="0" step="0.1" oninput="calcularTempo()" onblur="registarHistoricoTempo()" />
-            <span class="unit" id="unit-velocidade">kW</span>
-          </div>
-          <div id="group-tensao" style="margin-top:10px; display:none;">
-            <div class="input-wrapper">
-              <input type="number" id="tensao" value="230" min="0" step="1" oninput="calcularTempo()" />
-              <span class="unit">V</span>
+          <div class="section-body">
+            <div class="form-group">
+              <label for="bateria-tempo">Capacidade da bateria</label>
+              <div class="input-wrapper">
+                <input type="number" id="bateria-tempo" value="82" min="0" step="0.1" oninput="calcularTempo()" />
+                <span class="unit">kWh</span>
+              </div>
             </div>
-            <div style="font-size:0.75rem; color:rgba(255,255,255,0.3); margin-top:5px;">230V monofásico · 400V trifásico</div>
+            <div class="form-group">
+              <label for="perc-restante">Percentagem restante</label>
+              <div class="input-wrapper">
+                <input type="number" id="perc-restante" placeholder="Ex: 20" min="0" max="100" step="1" oninput="calcularTempo()" />
+                <span class="unit">%</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="perc-final">Percentagem final</label>
+              <div class="input-wrapper">
+                <input type="number" id="perc-final" placeholder="Ex: 80" min="0" max="100" step="1" oninput="calcularTempo()" />
+                <span class="unit">%</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Energia a carregar</label>
+              <div class="result-card">
+                <span class="label">(% final − % restante) × bateria</span>
+                <span class="value" id="res-energia-tempo" style="color:#fff">—</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Velocidade de carregamento</label>
+              <div class="toggle-unit">
+                <button id="btn-kw" class="active" onclick="setModoVelocidade('kw')">kW</button>
+                <button id="btn-amp" onclick="setModoVelocidade('amp')">A</button>
+              </div>
+              <div class="input-wrapper">
+                <input type="number" id="velocidade" placeholder="Ex: 11" min="0" step="0.1" oninput="calcularTempo()" onblur="registarHistoricoTempo()" />
+                <span class="unit" id="unit-velocidade">kW</span>
+              </div>
+              <div id="group-tensao" style="margin-top:10px; display:none;">
+                <div class="input-wrapper">
+                  <input type="number" id="tensao" value="230" min="0" step="1" oninput="calcularTempo()" />
+                  <span class="unit">V</span>
+                </div>
+                <div style="font-size:0.75rem; color:rgba(255,255,255,0.3); margin-top:5px;">230V monofásico · 400V trifásico</div>
+              </div>
+              <div id="res-kw-amp" style="font-size:0.82rem; color:#7ee8fa; margin-top:8px; text-align:right;"></div>
+            </div>
+            <div class="form-group">
+              <label>Tempo para carregar</label>
+              <div class="result-card result-total">
+                <span class="label">Energia ÷ Velocidade</span>
+                <span class="value" id="res-tempo">—</span>
+              </div>
+            </div>
+            <div class="hist-wrap" id="hist-tempo">
+              <div class="hist-header">
+                <span class="hist-label">Histórico</span>
+                <button class="clear-history" onclick="limparHistoricoTempo()">Limpar</button>
+              </div>
+              <ul class="history-list" id="hist-tempo-list"></ul>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn-secondary" onclick="limparTempo()" style="margin-top:0;">Limpar</button>
+              <button class="btn-secondary" onclick="resetTempo()" style="margin-top:0;">Reset</button>
+            </div>
           </div>
-          <div id="res-kw-amp" style="font-size:0.82rem; color:#7ee8fa; margin-top:8px; text-align:right;"></div>
         </div>
-        <div class="form-group">
-          <label>Tempo para carregar</label>
-          <div class="result-card result-total">
-            <span class="label">Energia ÷ Velocidade</span>
-            <span class="value" id="res-tempo">—</span>
+
+        <!-- Sub-secção 3b: Tempo até carregar -->
+        <div class="section subsection open" id="sec-tempo-ate">
+          <div class="section-header" onclick="toggleSection('sec-tempo-ate')">
+            <span class="sec-title">Tempo até carregar</span>
+            <span class="sec-arrow">▼</span>
+          </div>
+          <div class="section-body">
+            <div class="form-group">
+              <label for="bateria-tempo2">Capacidade da bateria</label>
+              <div class="input-wrapper">
+                <input type="number" id="bateria-tempo2" value="82" min="0" step="0.1" oninput="calcularTempoAte()" />
+                <span class="unit">kWh</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="perc-restante2">Percentagem restante</label>
+              <div class="input-wrapper">
+                <input type="number" id="perc-restante2" placeholder="Ex: 20" min="0" max="100" step="1" oninput="calcularTempoAte()" />
+                <span class="unit">%</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="perc-final2">Percentagem final</label>
+              <div class="input-wrapper">
+                <input type="number" id="perc-final2" placeholder="Ex: 80" min="0" max="100" step="1" oninput="calcularTempoAte()" />
+                <span class="unit">%</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Energia a carregar</label>
+              <div class="result-card">
+                <span class="label">(% final − % restante) × bateria</span>
+                <span class="value" id="res-energia-tempo2" style="color:#fff">—</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Velocidade de carregamento</label>
+              <div class="toggle-unit">
+                <button id="btn-kw2" class="active" onclick="setModoVelocidade2('kw')">kW</button>
+                <button id="btn-amp2" onclick="setModoVelocidade2('amp')">A</button>
+              </div>
+              <div class="input-wrapper">
+                <input type="number" id="velocidade2" placeholder="Ex: 11" min="0" step="0.1" oninput="calcularTempoAte()" onblur="registarHistoricoTempoAte()" />
+                <span class="unit" id="unit-velocidade2">kW</span>
+              </div>
+              <div id="group-tensao2" style="margin-top:10px; display:none;">
+                <div class="input-wrapper">
+                  <input type="number" id="tensao2" value="230" min="0" step="1" oninput="calcularTempoAte()" />
+                  <span class="unit">V</span>
+                </div>
+                <div style="font-size:0.75rem; color:rgba(255,255,255,0.3); margin-top:5px;">230V monofásico · 400V trifásico</div>
+              </div>
+              <div id="res-kw-amp2" style="font-size:0.82rem; color:#7ee8fa; margin-top:8px; text-align:right;"></div>
+            </div>
+            <div class="form-group">
+              <label for="hora-pretendida">Hora pretendida (pronto às)</label>
+              <div class="input-wrapper">
+                <input type="time" id="hora-pretendida" oninput="calcularTempoAte()" onblur="registarHistoricoTempoAte()" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Ligar o carregador às</label>
+              <div class="result-card result-total">
+                <span class="label" id="res-hora-ligar-label">Hora pretendida − duração</span>
+                <span class="value" id="res-hora-ligar">—</span>
+              </div>
+            </div>
+            <div class="hist-wrap" id="hist-tempo-ate">
+              <div class="hist-header">
+                <span class="hist-label">Histórico</span>
+                <button class="clear-history" onclick="limparHistoricoTempoAte()">Limpar</button>
+              </div>
+              <ul class="history-list" id="hist-tempo-ate-list"></ul>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn-secondary" onclick="limparTempoAte()" style="margin-top:0;">Limpar</button>
+              <button class="btn-secondary" onclick="resetTempoAte()" style="margin-top:0;">Reset</button>
+            </div>
           </div>
         </div>
-        <div class="hist-wrap" id="hist-tempo">
-          <div class="hist-header">
-            <span class="hist-label">Histórico</span>
-            <button class="clear-history" onclick="limparHistoricoTempo()">Limpar</button>
-          </div>
-          <ul class="history-list" id="hist-tempo-list"></ul>
-        </div>
-        <div style="display:flex; gap:8px;">
-          <button class="btn-secondary" onclick="limparTempo()" style="margin-top:0;">Limpar</button>
-          <button class="btn-secondary" onclick="resetTempo()" style="margin-top:0;">Reset</button>
-        </div>
+
       </div>
     </div>
 
@@ -969,6 +1077,152 @@
     }
 
     function limparHistoricoTempo() { histTempo.length = 0; renderHistoricoTempo(); }
+
+    // ── Tempo até carregar ──
+    const histTempoAte = [];
+    let modoVelocidade2 = 'kw';
+
+    function setModoVelocidade2(modo) {
+      modoVelocidade2 = modo;
+      document.getElementById('btn-kw2').classList.toggle('active', modo === 'kw');
+      document.getElementById('btn-amp2').classList.toggle('active', modo === 'amp');
+      document.getElementById('unit-velocidade2').textContent = modo === 'kw' ? 'kW' : 'A';
+      document.getElementById('group-tensao2').style.display = modo === 'amp' ? 'block' : 'none';
+      document.getElementById('velocidade2').placeholder = modo === 'kw' ? 'Ex: 11' : 'Ex: 16';
+      document.getElementById('velocidade2').value = '';
+      document.getElementById('res-kw-amp2').textContent = '';
+      calcularTempoAte();
+    }
+
+    function getVelocidadeKw2() {
+      const val = parseFloat(document.getElementById('velocidade2').value);
+      if (isNaN(val) || val <= 0) return null;
+      if (modoVelocidade2 === 'kw') return val;
+      const tensao = parseFloat(document.getElementById('tensao2').value) || 230;
+      return (val * tensao) / 1000;
+    }
+
+    function calcularTempoAte() {
+      const bateria   = parseFloat(document.getElementById('bateria-tempo2').value);
+      const percRest  = parseFloat(document.getElementById('perc-restante2').value);
+      const percFinal = parseFloat(document.getElementById('perc-final2').value);
+      const horaStr   = document.getElementById('hora-pretendida').value;
+      const elEnergia = document.getElementById('res-energia-tempo2');
+      const elRes     = document.getElementById('res-hora-ligar');
+      const elLabel   = document.getElementById('res-hora-ligar-label');
+      const elKwAmp   = document.getElementById('res-kw-amp2');
+
+      const val2 = parseFloat(document.getElementById('velocidade2').value);
+      if (val2 > 0) {
+        if (modoVelocidade2 === 'amp') {
+          const tensao = parseFloat(document.getElementById('tensao2').value) || 230;
+          elKwAmp.textContent = `≈ ${((val2 * tensao) / 1000).toLocaleString('pt-PT', { maximumFractionDigits: 2 })} kW`;
+        } else {
+          elKwAmp.textContent = `≈ ${((val2 * 1000) / 230).toLocaleString('pt-PT', { maximumFractionDigits: 1 })} A`;
+        }
+      } else {
+        elKwAmp.textContent = '';
+      }
+
+      if (bateria > 0 && percFinal > percRest && percRest >= 0) {
+        const energia = ((percFinal - percRest) / 100) * bateria;
+        elEnergia.textContent = energia.toLocaleString('pt-PT', { maximumFractionDigits: 2 }) + ' kWh';
+        const velocidadeKw = getVelocidadeKw2();
+        if (velocidadeKw && horaStr) {
+          const horas = energia / velocidadeKw;
+          const h = Math.floor(horas);
+          const m = Math.round((horas - h) * 60);
+          const duracaoStr = h > 0 ? `${h}h ${m}min` : `${m}min`;
+
+          // Calcular hora de início: hora pretendida - duração
+          const [hAlvo, mAlvo] = horaStr.split(':').map(Number);
+          const agora = new Date();
+          const alvo = new Date(agora);
+          alvo.setHours(hAlvo, mAlvo, 0, 0);
+          const inicio = new Date(alvo.getTime() - horas * 3600000);
+
+          const inicioH = String(inicio.getHours()).padStart(2, '0');
+          const inicioM = String(inicio.getMinutes()).padStart(2, '0');
+          const inicioStr = `${inicioH}:${inicioM}`;
+
+          // Se o início é noutro dia, mostrar data
+          const hoje = new Date();
+          let dataExtra = '';
+          if (inicio.getDate() !== hoje.getDate() || inicio.getMonth() !== hoje.getMonth()) {
+            dataExtra = ` (${String(inicio.getDate()).padStart(2,'0')}/${String(inicio.getMonth()+1).padStart(2,'0')})`;
+          }
+
+          elLabel.textContent = `${horaStr} − ${duracaoStr}`;
+          elRes.textContent = `${inicioStr}${dataExtra}`;
+        } else {
+          elLabel.textContent = 'Hora pretendida − duração';
+          elRes.textContent = '—';
+        }
+      } else {
+        elEnergia.textContent = '—';
+        elLabel.textContent = 'Hora pretendida − duração';
+        elRes.textContent = '—';
+      }
+    }
+
+    function registarHistoricoTempoAte() {
+      const bateria   = parseFloat(document.getElementById('bateria-tempo2').value);
+      const percRest  = parseFloat(document.getElementById('perc-restante2').value);
+      const percFinal = parseFloat(document.getElementById('perc-final2').value);
+      const horaStr   = document.getElementById('hora-pretendida').value;
+      const velocidadeKw = getVelocidadeKw2();
+      const velocidadeRaw = parseFloat(document.getElementById('velocidade2').value);
+      if (!(bateria > 0 && percFinal > percRest && percRest >= 0 && velocidadeKw && horaStr)) return;
+      const energia = ((percFinal - percRest) / 100) * bateria;
+      const horas = energia / velocidadeKw;
+      const h = Math.floor(horas);
+      const m = Math.round((horas - h) * 60);
+      const duracaoStr = h > 0 ? `${h}h ${m}min` : `${m}min`;
+      const [hAlvo, mAlvo] = horaStr.split(':').map(Number);
+      const alvo = new Date();
+      alvo.setHours(hAlvo, mAlvo, 0, 0);
+      const inicio = new Date(alvo.getTime() - horas * 3600000);
+      const inicioStr = `${String(inicio.getHours()).padStart(2,'0')}:${String(inicio.getMinutes()).padStart(2,'0')}`;
+      const label = modoVelocidade2 === 'kw'
+        ? `${velocidadeRaw} kW`
+        : `${velocidadeRaw}A × ${document.getElementById('tensao2').value || 230}V`;
+      const last = histTempoAte[0];
+      if (last && last.percRest === percRest && last.percFinal === percFinal && last.horaStr === horaStr && last.velocidadeRaw === velocidadeRaw) return;
+      histTempoAte.unshift({ percRest, percFinal, horaStr, velocidadeRaw, duracaoStr, inicioStr, label, hora: hora() });
+      if (histTempoAte.length > 10) histTempoAte.pop();
+      renderHistoricoTempoAte();
+    }
+
+    function renderHistoricoTempoAte() {
+      const wrap = document.getElementById('hist-tempo-ate');
+      const list = document.getElementById('hist-tempo-ate-list');
+      if (histTempoAte.length === 0) { wrap.classList.remove('visible'); return; }
+      wrap.classList.add('visible');
+      list.innerHTML = histTempoAte.map(h => `
+        <li class="history-item">
+          <span class="meta">${h.hora} · ${h.percRest}%→${h.percFinal}% @ ${h.label} → pronto ${h.horaStr}</span>
+          <span class="val">${h.inicioStr}</span>
+        </li>`).join('');
+    }
+
+    function limparHistoricoTempoAte() { histTempoAte.length = 0; renderHistoricoTempoAte(); }
+
+    function limparTempoAte() {
+      ['perc-restante2','perc-final2','velocidade2','bateria-tempo2','hora-pretendida'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('res-energia-tempo2').textContent = '—';
+      document.getElementById('res-hora-ligar').textContent = '—';
+      document.getElementById('res-hora-ligar-label').textContent = 'Hora pretendida − duração';
+      document.getElementById('res-kw-amp2').textContent = '';
+    }
+
+    function resetTempoAte() {
+      document.getElementById('bateria-tempo2').value = '82';
+      ['perc-restante2','perc-final2','velocidade2','hora-pretendida'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('res-energia-tempo2').textContent = '—';
+      document.getElementById('res-hora-ligar').textContent = '—';
+      document.getElementById('res-hora-ligar-label').textContent = 'Hora pretendida − duração';
+      document.getElementById('res-kw-amp2').textContent = '';
+    }
 
     // ── IVA ──
     function calcularIva(origem) {
