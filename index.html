@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -397,11 +397,11 @@
   </style>
 </head>
 <body>
-  <div class="modal-overlay" id="modal-curva" onclick="fecharModalFora(event)">
+  <div class="modal-overlay" id="modal-curva" onclick="fecharModalFora(event)" role="dialog" aria-modal="true" aria-label="Curva de Carregamento — BMW i5 eDrive40">
     <div class="modal">
       <div class="modal-header">
         <span class="modal-title">Curva de Carregamento — BMW i5 eDrive40</span>
-        <button class="modal-close" onclick="fecharModal()">✕</button>
+        <button class="modal-close" onclick="fecharModal()" aria-label="Fechar">✕</button>
       </div>
       <canvas id="grafico-curva"></canvas>
     </div>
@@ -409,7 +409,7 @@
 
   <div class="container">
     <div class="header">
-      <span class="icon">⚡</span>
+      <span class="icon" aria-hidden="true">⚡</span>
       <h1>Carregamento Elétrico</h1>
       <p>Calcule o custo do carregamento do seu veículo</p>
     </div>
@@ -418,7 +418,7 @@
     <div class="section" id="sec-alcance">
       <div class="section-header" onclick="toggleSection('sec-alcance')">
         <span class="sec-title">Alcance</span>
-        <span class="sec-arrow">▼</span>
+        <span class="sec-arrow" aria-hidden="true">▼</span>
       </div>
       <div class="section-body">
         <div class="form-group">
@@ -460,7 +460,7 @@
     <div class="section" id="sec-autonomia">
       <div class="section-header" onclick="toggleSection('sec-autonomia')">
         <span class="sec-title">Previsão Autonomia</span>
-        <span class="sec-arrow">▼</span>
+        <span class="sec-arrow" aria-hidden="true">▼</span>
       </div>
       <div class="section-body">
         <div class="form-group">
@@ -509,7 +509,7 @@
     <div class="section" id="sec-custo">
       <div class="section-header" onclick="toggleSection('sec-custo')">
         <span class="sec-title">Custo de Carregamento</span>
-        <span class="sec-arrow">▼</span>
+        <span class="sec-arrow" aria-hidden="true">▼</span>
       </div>
       <div class="section-body">
         <div class="form-group">
@@ -548,7 +548,7 @@
     <div class="section" id="sec-tempo">
       <div class="section-header" onclick="toggleSection('sec-tempo')">
         <span class="sec-title">Tempo carregamento</span>
-        <span class="sec-arrow">▼</span>
+        <span class="sec-arrow" aria-hidden="true">▼</span>
       </div>
       <div class="section-body">
 
@@ -556,7 +556,7 @@
         <div class="section subsection" id="sec-tempo-carregar">
           <div class="section-header" onclick="toggleSection('sec-tempo-carregar')">
             <span class="sec-title">Tempo para carregar</span>
-            <span class="sec-arrow">▼</span>
+            <span class="sec-arrow" aria-hidden="true">▼</span>
           </div>
           <div class="section-body">
             <div class="form-group">
@@ -638,7 +638,7 @@
         <div class="section subsection" id="sec-tempo-ate">
           <div class="section-header" onclick="toggleSection('sec-tempo-ate')">
             <span class="sec-title">Tempo até carregar</span>
-            <span class="sec-arrow">▼</span>
+            <span class="sec-arrow" aria-hidden="true">▼</span>
           </div>
           <div class="section-body">
             <div class="form-group">
@@ -727,7 +727,7 @@
     <div class="section" id="sec-iva">
       <div class="section-header" onclick="toggleSection('sec-iva')">
         <span class="sec-title">Calcular IVA</span>
-        <span class="sec-arrow">▼</span>
+        <span class="sec-arrow" aria-hidden="true">▼</span>
       </div>
       <div class="section-body">
         <div class="form-group">
@@ -776,7 +776,7 @@
     <div class="section" id="sec-contrato">
       <div class="section-header" onclick="toggleSection('sec-contrato')">
         <span class="sec-title">Estimativa Km do Contrato</span>
-        <span class="sec-arrow">▼</span>
+        <span class="sec-arrow" aria-hidden="true">▼</span>
       </div>
       <div class="section-body">
         <div class="form-group">
@@ -831,11 +831,11 @@
       </div>
     </div>
 
-    <button class="btn-curve" onclick="abrirModal()">⚡ Curva de Carregamento</button>
+    <button class="btn-curve" onclick="abrirModal()" aria-haspopup="dialog">⚡ Curva de Carregamento</button>
 
     <div class="version">
       <span></span>
-      <a href="https://www.linkedin.com/in/brunocarrulo/" target="_blank" rel="noopener" onclick="gtag('event','linkedin_click',{event_category:'footer',event_label:'Made by Bruno Carrulo'})">Made by Bruno Carrulo</a>
+      <a href="https://www.linkedin.com/in/brunocarrulo/" target="_blank" rel="noopener noreferrer" onclick="gtag('event','linkedin_click',{event_category:'footer',event_label:'Made by Bruno Carrulo'})">Made by Bruno Carrulo</a>
       <a href="changelog.html" style="color:rgba(255,255,255,0.2); text-decoration:none;" onmouseover="this.style.color='#7ee8fa'" onmouseout="this.style.color='rgba(255,255,255,0.2)'" onclick="gtag('event','changelog_click',{event_category:'footer',event_label:'v1.17.1'})">v1.17.1</a>
     </div>
   </div>
