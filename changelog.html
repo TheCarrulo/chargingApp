@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Changelog — Carregamento Elétrico</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-G5M2P6GKTH"></script>
   <script>
@@ -70,6 +72,18 @@
     <a class="back" href="index.html">← Voltar</a>
     <div class="header">
       <h1>⚡ Changelog</h1>
+    </div>
+
+    <div class="version-block">
+      <div class="version-tag">v1.18</div>
+      <ul>
+        <li>Potência trifásica correta: √3 × 400 V × A (16 A ≈ 11,1 kW) e amperes por fase no modo kW</li>
+        <li>Escolha explícita monofásico 230 V / trifásico 400 V</li>
+        <li>Corrige durações que podiam aparecer como «Xh 60min»</li>
+        <li>Tempo de carga em DC pela curva do i5: potência = mínimo entre o carregador e a curva em cada SoC</li>
+        <li>Eixo X do gráfico linear em percentagem de bateria</li>
+        <li>Favicon 32 px e apple-touch-icon 180 px no lugar da imagem de 1024 px</li>
+      </ul>
     </div>
 
     <div class="version-block">

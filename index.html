@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Calculadora de Carregamento Elétrico</title>
-  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-G5M2P6GKTH"></script>
   <script>
@@ -156,6 +157,8 @@
       background: rgba(126,232,250,0.08);
     }
 
+    input:disabled { opacity: 0.4; cursor: not-allowed; }
+
     .result-card {
       background: rgba(126,232,250,0.08);
       border: 1px solid rgba(126,232,250,0.2);
@@ -301,14 +304,15 @@
 
     .toggle-unit button {
       flex: 1;
-      padding: 5px 10px;
+      padding: 5px 8px;
       background: none;
       border: none;
       border-radius: 6px;
       color: rgba(255,255,255,0.4);
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
+      line-height: 1.25;
       transition: background 0.2s, color 0.2s;
     }
 
@@ -588,35 +592,40 @@
               </div>
             </div>
             <div class="form-group">
+              <label>Tipo de carregamento</label>
+              <div class="toggle-unit">
+                <button id="btn-ac" class="active" onclick="setTipoCarga('ac')">AC (potência constante)</button>
+                <button id="btn-dc" onclick="setTipoCarga('dc')">DC (curva i5)</button>
+              </div>
+            </div>
+            <div class="form-group">
               <label>Velocidade de carregamento</label>
               <div class="toggle-unit">
                 <button id="btn-kw" class="active" onclick="setModoVelocidade('kw')">kW</button>
                 <button id="btn-amp" onclick="setModoVelocidade('amp')">A</button>
               </div>
+              <div class="toggle-unit">
+                <button id="btn-mono" class="active" onclick="setFase('mono')">Monofásico 230 V</button>
+                <button id="btn-tri" onclick="setFase('tri')">Trifásico 400 V</button>
+              </div>
               <div class="input-wrapper">
                 <input type="number" id="velocidade" placeholder="Ex: 11" min="0" step="0.1" oninput="calcularTempo()" onblur="registarHistoricoTempo()" />
                 <span class="unit" id="unit-velocidade">kW</span>
-              </div>
-              <div id="group-tensao" style="margin-top:10px; display:none;">
-                <div class="input-wrapper">
-                  <input type="number" id="tensao" value="230" min="0" step="1" oninput="calcularTempo()" />
-                  <span class="unit">V</span>
-                </div>
-                <div style="font-size:0.75rem; color:rgba(255,255,255,0.3); margin-top:5px;">230V monofásico · 400V trifásico</div>
               </div>
               <div id="res-kw-amp" style="font-size:0.82rem; color:#7ee8fa; margin-top:8px; text-align:right;"></div>
             </div>
             <div class="form-group">
               <label for="eficiencia">Eficiência do carregamento</label>
               <div class="input-wrapper">
-                <input type="number" id="eficiencia" value="87.5" min="1" max="100" step="0.5" oninput="calcularTempo()" />
+                <input type="number" id="eficiencia" value="87.5" min="1" max="100" step="0.5" oninput="calcularTempo()" title="Aplicada apenas em AC (potência constante)" />
                 <span class="unit">%</span>
               </div>
+              <div id="hint-eficiencia" style="font-size:0.75rem; color:rgba(255,255,255,0.35); margin-top:6px; display:none;">Não se aplica em DC</div>
             </div>
             <div class="form-group">
               <label>Tempo para carregar</label>
               <div class="result-card result-total">
-                <span class="label">Energia ÷ Velocidade</span>
+                <span class="label" id="res-tempo-label">Energia ÷ Velocidade</span>
                 <span class="value" id="res-tempo">—</span>
               </div>
             </div>
@@ -670,30 +679,35 @@
               </div>
             </div>
             <div class="form-group">
+              <label>Tipo de carregamento</label>
+              <div class="toggle-unit">
+                <button id="btn-ac2" class="active" onclick="setTipoCarga2('ac')">AC (potência constante)</button>
+                <button id="btn-dc2" onclick="setTipoCarga2('dc')">DC (curva i5)</button>
+              </div>
+            </div>
+            <div class="form-group">
               <label>Velocidade de carregamento</label>
               <div class="toggle-unit">
                 <button id="btn-kw2" class="active" onclick="setModoVelocidade2('kw')">kW</button>
                 <button id="btn-amp2" onclick="setModoVelocidade2('amp')">A</button>
               </div>
+              <div class="toggle-unit">
+                <button id="btn-mono2" class="active" onclick="setFase2('mono')">Monofásico 230 V</button>
+                <button id="btn-tri2" onclick="setFase2('tri')">Trifásico 400 V</button>
+              </div>
               <div class="input-wrapper">
                 <input type="number" id="velocidade2" placeholder="Ex: 11" min="0" step="0.1" oninput="calcularTempoAte()" onblur="registarHistoricoTempoAte()" />
                 <span class="unit" id="unit-velocidade2">kW</span>
-              </div>
-              <div id="group-tensao2" style="margin-top:10px; display:none;">
-                <div class="input-wrapper">
-                  <input type="number" id="tensao2" value="230" min="0" step="1" oninput="calcularTempoAte()" />
-                  <span class="unit">V</span>
-                </div>
-                <div style="font-size:0.75rem; color:rgba(255,255,255,0.3); margin-top:5px;">230V monofásico · 400V trifásico</div>
               </div>
               <div id="res-kw-amp2" style="font-size:0.82rem; color:#7ee8fa; margin-top:8px; text-align:right;"></div>
             </div>
             <div class="form-group">
               <label for="eficiencia2">Eficiência do carregamento</label>
               <div class="input-wrapper">
-                <input type="number" id="eficiencia2" value="87.5" min="1" max="100" step="0.5" oninput="calcularTempoAte()" />
+                <input type="number" id="eficiencia2" value="87.5" min="1" max="100" step="0.5" oninput="calcularTempoAte()" title="Aplicada apenas em AC (potência constante)" />
                 <span class="unit">%</span>
               </div>
+              <div id="hint-eficiencia2" style="font-size:0.75rem; color:rgba(255,255,255,0.35); margin-top:6px; display:none;">Não se aplica em DC</div>
             </div>
             <div class="form-group">
               <label for="hora-pretendida">Data e hora pretendida (pronto às)</label>
@@ -836,7 +850,7 @@
     <div class="version">
       <span></span>
       <a href="https://www.linkedin.com/in/brunocarrulo/" target="_blank" rel="noopener noreferrer" onclick="gtag('event','linkedin_click',{event_category:'footer',event_label:'Made by Bruno Carrulo'})">Made by Bruno Carrulo</a>
-      <a href="changelog.html" style="color:rgba(255,255,255,0.2); text-decoration:none;" onmouseover="this.style.color='#7ee8fa'" onmouseout="this.style.color='rgba(255,255,255,0.2)'" onclick="gtag('event','changelog_click',{event_category:'footer',event_label:'v1.17.1'})">v1.17.1</a>
+      <a href="changelog.html" style="color:rgba(255,255,255,0.2); text-decoration:none;" onmouseover="this.style.color='#7ee8fa'" onmouseout="this.style.color='rgba(255,255,255,0.2)'" onclick="gtag('event','changelog_click',{event_category:'footer',event_label:'v1.18'})">v1.18</a>
     </div>
   </div>
 
@@ -1004,19 +1018,143 @@
 
     function limparHistoricoCusto() { histCusto.length = 0; renderHistoricoCusto(); }
 
+    // ── Potência e tempo ──
+    function kwDeAmperes(amps, faseId) {
+      if (faseId === 'tri') return amps * Math.sqrt(3) * 400 / 1000;
+      return amps * 230 / 1000;
+    }
+
+    function amperesDeKw(kw, faseId) {
+      if (faseId === 'tri') return kw * 1000 / (Math.sqrt(3) * 400);
+      return kw * 1000 / 230;
+    }
+
+    function textoEquivalente(val, modo, faseId) {
+      if (!(val > 0)) return '';
+      if (modo === 'amp') {
+        const kw = kwDeAmperes(val, faseId);
+        return `≈ ${kw.toLocaleString('pt-PT', { maximumFractionDigits: 2 })} kW`;
+      }
+      const amp = amperesDeKw(val, faseId);
+      const unidade = faseId === 'tri' ? 'A/fase' : 'A';
+      return `≈ ${amp.toLocaleString('pt-PT', { maximumFractionDigits: 1 })} ${unidade}`;
+    }
+
+    function formatDuracao(horas) {
+      const totalMin = Math.round(horas * 60);
+      const h = Math.floor(totalMin / 60);
+      const m = totalMin % 60;
+      return h > 0 ? `${h}h ${m}min` : `${m}min`;
+    }
+
+    function fmtDataHora(d) {
+      const p = n => String(n).padStart(2, '0');
+      return `${p(d.getDate())}/${p(d.getMonth() + 1)} ${p(d.getHours())}:${p(d.getMinutes())}`;
+    }
+
+    function horasAc(soc0, soc1, bateriaKwh, kw, eficienciaPct) {
+      const eff = (eficienciaPct > 0 ? eficienciaPct : 100) / 100;
+      const energia = ((soc1 - soc0) / 100) * bateriaKwh;
+      return energia / (kw * eff);
+    }
+
+    function potenciaCurva(soc) {
+      const xs = curvaData.labels;
+      const ys = curvaData.values;
+      if (soc <= xs[0]) return ys[0];
+      if (soc >= xs[xs.length - 1]) return ys[ys.length - 1];
+      let lo = 0;
+      let hi = xs.length - 1;
+      while (hi - lo > 1) {
+        const mid = (lo + hi) >> 1;
+        if (xs[mid] <= soc) lo = mid;
+        else hi = mid;
+      }
+      const t = (soc - xs[lo]) / (xs[hi] - xs[lo]);
+      return ys[lo] + (ys[hi] - ys[lo]) * t;
+    }
+
+    function horasTrechoLinear(ds, p0, p1, kwhPorPct) {
+      if (!(ds > 0)) return 0;
+      if (!(p0 > 0) || !(p1 > 0)) return Infinity;
+      if (Math.abs(p1 - p0) / Math.max(p0, p1) < 1e-9) return kwhPorPct * ds / p0;
+      return kwhPorPct * ds * Math.log(p1 / p0) / (p1 - p0);
+    }
+
+    function horasTrechoLimitado(a, b, pa, pb, chargerKw, kwhPorPct) {
+      const cruza = (pa - chargerKw) * (pb - chargerKw) < 0;
+      if (!cruza) {
+        return horasTrechoLinear(b - a, Math.min(pa, chargerKw), Math.min(pb, chargerKw), kwhPorPct);
+      }
+      const s = a + (b - a) * (chargerKw - pa) / (pb - pa);
+      return horasTrechoLinear(s - a, Math.min(pa, chargerKw), chargerKw, kwhPorPct)
+           + horasTrechoLinear(b - s, chargerKw, Math.min(pb, chargerKw), kwhPorPct);
+    }
+
+    function horasDc(soc0, soc1, bateriaKwh, chargerKw) {
+      if (!(soc1 > soc0) || !(bateriaKwh > 0) || !(chargerKw > 0)) return NaN;
+      const xs = curvaData.labels;
+      const knots = [soc0];
+      for (let i = 0; i < xs.length; i++) {
+        if (xs[i] > soc0 && xs[i] < soc1) knots.push(xs[i]);
+      }
+      knots.push(soc1);
+      const kwhPorPct = bateriaKwh / 100;
+      let horas = 0;
+      for (let i = 0; i < knots.length - 1; i++) {
+        const a = knots[i];
+        const b = knots[i + 1];
+        horas += horasTrechoLimitado(a, b, potenciaCurva(a), potenciaCurva(b), chargerKw, kwhPorPct);
+      }
+      return horas;
+    }
+
+    function horasParaCarregar(soc0, soc1, bateriaKwh, kw, eficienciaPct, tipo) {
+      if (tipo === 'dc') return horasDc(soc0, soc1, bateriaKwh, kw);
+      return horasAc(soc0, soc1, bateriaKwh, kw, eficienciaPct);
+    }
+
+    function rotuloFase(faseId) {
+      return faseId === 'tri' ? '400 V trifásico' : '230 V monofásico';
+    }
+
+    function rotuloVelocidade(raw, modo, faseId, kw, tipo) {
+      const base = modo === 'kw'
+        ? `${raw} kW · ${rotuloFase(faseId)}`
+        : `${raw}A × ${rotuloFase(faseId)} = ${kw.toFixed(2)} kW`;
+      return tipo === 'dc' ? `${base} · DC` : base;
+    }
+
     // ── Tempo ──
     const histTempo = [];
     let modoVelocidade = 'kw';
+    let fase = 'mono';
+    let tipoCarga = 'ac';
 
     function setModoVelocidade(modo) {
       modoVelocidade = modo;
       document.getElementById('btn-kw').classList.toggle('active', modo === 'kw');
       document.getElementById('btn-amp').classList.toggle('active', modo === 'amp');
       document.getElementById('unit-velocidade').textContent = modo === 'kw' ? 'kW' : 'A';
-      document.getElementById('group-tensao').style.display = modo === 'amp' ? 'block' : 'none';
       document.getElementById('velocidade').placeholder = modo === 'kw' ? 'Ex: 11' : 'Ex: 16';
       document.getElementById('velocidade').value = '';
       document.getElementById('res-kw-amp').textContent = '';
+      calcularTempo();
+    }
+
+    function setFase(faseId) {
+      fase = faseId;
+      document.getElementById('btn-mono').classList.toggle('active', faseId === 'mono');
+      document.getElementById('btn-tri').classList.toggle('active', faseId === 'tri');
+      calcularTempo();
+    }
+
+    function setTipoCarga(tipo) {
+      tipoCarga = tipo;
+      document.getElementById('btn-ac').classList.toggle('active', tipo === 'ac');
+      document.getElementById('btn-dc').classList.toggle('active', tipo === 'dc');
+      document.getElementById('eficiencia').disabled = tipo === 'dc';
+      document.getElementById('hint-eficiencia').style.display = tipo === 'dc' ? 'block' : 'none';
       calcularTempo();
     }
 
@@ -1024,8 +1162,7 @@
       const val = parseFloat(document.getElementById('velocidade').value);
       if (isNaN(val) || val <= 0) return null;
       if (modoVelocidade === 'kw') return val;
-      const tensao = parseFloat(document.getElementById('tensao').value) || 230;
-      return (val * tensao) / 1000;
+      return kwDeAmperes(val, fase);
     }
 
     function calcularTempo() {
@@ -1035,22 +1172,14 @@
       const elEnergia = document.getElementById('res-energia-tempo');
       const elTempo   = document.getElementById('res-tempo');
       const elKwAmp   = document.getElementById('res-kw-amp');
+      const elLabel   = document.getElementById('res-tempo-label');
 
-      if (elKwAmp) {
-        const val = parseFloat(document.getElementById('velocidade').value);
-        if (val > 0) {
-          if (modoVelocidade === 'amp') {
-            const tensao = parseFloat(document.getElementById('tensao').value) || 230;
-            const kw = (val * tensao) / 1000;
-            elKwAmp.textContent = `≈ ${kw.toLocaleString('pt-PT', { maximumFractionDigits: 2 })} kW`;
-          } else {
-            const amp = (val * 1000) / 230;
-            elKwAmp.textContent = `≈ ${amp.toLocaleString('pt-PT', { maximumFractionDigits: 1 })} A`;
-          }
-        } else {
-          elKwAmp.textContent = '';
-        }
-      }
+      elLabel.textContent = tipoCarga === 'dc'
+        ? 'Curva i5 · min(potência, curva)'
+        : 'Energia ÷ Velocidade';
+
+      const val = parseFloat(document.getElementById('velocidade').value);
+      elKwAmp.textContent = textoEquivalente(val, modoVelocidade, fase);
 
       if (bateria > 0 && percFinal > percRest && percRest >= 0) {
         const energia = ((percFinal - percRest) / 100) * bateria;
@@ -1058,16 +1187,11 @@
         const velocidadeKw = getVelocidadeKw();
         const eficiencia = parseFloat(document.getElementById('eficiencia').value) || 100;
         if (velocidadeKw) {
-          const horas = energia / (velocidadeKw * (eficiencia / 100));
-          const h = Math.floor(horas);
-          const m = Math.round((horas - h) * 60);
-          const tempoStr = h > 0 ? `${h}h ${m}min` : `${m}min`;
-          const eta = new Date(Date.now() + horas * 3600000);
-          const etaStr = (String(eta.getDate()).padStart(2,'0')) + '/' +
-                         (String(eta.getMonth()+1).padStart(2,'0')) + ' ' +
-                         (String(eta.getHours()).padStart(2,'0')) + ':' +
-                         (String(eta.getMinutes()).padStart(2,'0'));
-          elTempo.textContent = `${tempoStr} / ${etaStr}`;
+          const horas = horasParaCarregar(percRest, percFinal, bateria, velocidadeKw, eficiencia, tipoCarga);
+          if (!isFinite(horas)) { elTempo.textContent = '—'; return; }
+          const tempoStr = formatDuracao(horas);
+          const eta = new Date(Date.now() + Math.round(horas * 60) * 60000);
+          elTempo.textContent = `${tempoStr} / ${fmtDataHora(eta)}`;
         } else {
           elTempo.textContent = '—';
         }
@@ -1084,18 +1208,13 @@
       const velocidadeKw = getVelocidadeKw();
       const velocidadeRaw = parseFloat(document.getElementById('velocidade').value);
       if (bateria > 0 && percFinal > percRest && percRest >= 0 && velocidadeKw) {
-        const energia = ((percFinal - percRest) / 100) * bateria;
         const eficienciaH = parseFloat(document.getElementById('eficiencia').value) || 100;
-        const horas   = energia / (velocidadeKw * (eficienciaH / 100));
-        const h = Math.floor(horas);
-        const m = Math.round((horas - h) * 60);
-        const tempoStr = h > 0 ? `${h}h ${m}min` : `${m}min`;
+        const horas = horasParaCarregar(percRest, percFinal, bateria, velocidadeKw, eficienciaH, tipoCarga);
+        const tempoStr = formatDuracao(horas);
         const last = histTempo[0];
-        if (last && last.percRest === percRest && last.percFinal === percFinal && last.velocidadeRaw === velocidadeRaw) return;
-        const label = modoVelocidade === 'kw'
-          ? `${velocidadeRaw} kW`
-          : `${velocidadeRaw}A × ${document.getElementById('tensao').value || 230}V = ${velocidadeKw.toFixed(2)} kW`;
-        histTempo.unshift({ percRest, percFinal, velocidadeRaw, tempoStr, label, hora: hora() });
+        if (last && last.percRest === percRest && last.percFinal === percFinal && last.velocidadeRaw === velocidadeRaw && last.fase === fase && last.tipo === tipoCarga) return;
+        const label = rotuloVelocidade(velocidadeRaw, modoVelocidade, fase, velocidadeKw, tipoCarga);
+        histTempo.unshift({ percRest, percFinal, velocidadeRaw, fase, tipo: tipoCarga, tempoStr, label, hora: hora() });
         if (histTempo.length > 10) histTempo.pop();
         renderHistoricoTempo();
       }
@@ -1118,16 +1237,33 @@
     // ── Tempo até carregar ──
     const histTempoAte = [];
     let modoVelocidade2 = 'kw';
+    let fase2 = 'mono';
+    let tipoCarga2 = 'ac';
 
     function setModoVelocidade2(modo) {
       modoVelocidade2 = modo;
       document.getElementById('btn-kw2').classList.toggle('active', modo === 'kw');
       document.getElementById('btn-amp2').classList.toggle('active', modo === 'amp');
       document.getElementById('unit-velocidade2').textContent = modo === 'kw' ? 'kW' : 'A';
-      document.getElementById('group-tensao2').style.display = modo === 'amp' ? 'block' : 'none';
       document.getElementById('velocidade2').placeholder = modo === 'kw' ? 'Ex: 11' : 'Ex: 16';
       document.getElementById('velocidade2').value = '';
       document.getElementById('res-kw-amp2').textContent = '';
+      calcularTempoAte();
+    }
+
+    function setFase2(faseId) {
+      fase2 = faseId;
+      document.getElementById('btn-mono2').classList.toggle('active', faseId === 'mono');
+      document.getElementById('btn-tri2').classList.toggle('active', faseId === 'tri');
+      calcularTempoAte();
+    }
+
+    function setTipoCarga2(tipo) {
+      tipoCarga2 = tipo;
+      document.getElementById('btn-ac2').classList.toggle('active', tipo === 'ac');
+      document.getElementById('btn-dc2').classList.toggle('active', tipo === 'dc');
+      document.getElementById('eficiencia2').disabled = tipo === 'dc';
+      document.getElementById('hint-eficiencia2').style.display = tipo === 'dc' ? 'block' : 'none';
       calcularTempoAte();
     }
 
@@ -1135,8 +1271,7 @@
       const val = parseFloat(document.getElementById('velocidade2').value);
       if (isNaN(val) || val <= 0) return null;
       if (modoVelocidade2 === 'kw') return val;
-      const tensao = parseFloat(document.getElementById('tensao2').value) || 230;
-      return (val * tensao) / 1000;
+      return kwDeAmperes(val, fase2);
     }
 
     function calcularTempoAte() {
@@ -1150,16 +1285,7 @@
       const elKwAmp   = document.getElementById('res-kw-amp2');
 
       const val2 = parseFloat(document.getElementById('velocidade2').value);
-      if (val2 > 0) {
-        if (modoVelocidade2 === 'amp') {
-          const tensao = parseFloat(document.getElementById('tensao2').value) || 230;
-          elKwAmp.textContent = `≈ ${((val2 * tensao) / 1000).toLocaleString('pt-PT', { maximumFractionDigits: 2 })} kW`;
-        } else {
-          elKwAmp.textContent = `≈ ${((val2 * 1000) / 230).toLocaleString('pt-PT', { maximumFractionDigits: 1 })} A`;
-        }
-      } else {
-        elKwAmp.textContent = '';
-      }
+      elKwAmp.textContent = textoEquivalente(val2, modoVelocidade2, fase2);
 
       if (bateria > 0 && percFinal > percRest && percRest >= 0) {
         const energia = ((percFinal - percRest) / 100) * bateria;
@@ -1167,21 +1293,17 @@
         const velocidadeKw = getVelocidadeKw2();
         const eficiencia2 = parseFloat(document.getElementById('eficiencia2').value) || 100;
         if (velocidadeKw && horaStr) {
-          const horas = energia / (velocidadeKw * (eficiencia2 / 100));
-          const h = Math.floor(horas);
-          const m = Math.round((horas - h) * 60);
-          const duracaoStr = h > 0 ? `${h}h ${m}min` : `${m}min`;
-
-          // Calcular hora de início: hora pretendida (datetime-local) - duração
+          const horas = horasParaCarregar(percRest, percFinal, bateria, velocidadeKw, eficiencia2, tipoCarga2);
+          if (!isFinite(horas)) {
+            elLabel.textContent = 'Hora pretendida − duração';
+            elRes.textContent = '—';
+            return;
+          }
+          const duracaoStr = formatDuracao(horas);
           const alvo = new Date(horaStr);
-          const inicio = new Date(alvo.getTime() - horas * 3600000);
-
-          const pad = n => String(n).padStart(2, '0');
-          const inicioStr = `${pad(inicio.getDate())}/${pad(inicio.getMonth()+1)} ${pad(inicio.getHours())}:${pad(inicio.getMinutes())}`;
-          const alvoStr   = `${pad(alvo.getDate())}/${pad(alvo.getMonth()+1)} ${pad(alvo.getHours())}:${pad(alvo.getMinutes())}`;
-
-          elLabel.textContent = `${alvoStr} − ${duracaoStr}`;
-          elRes.textContent = inicioStr;
+          const inicio = new Date(alvo.getTime() - Math.round(horas * 60) * 60000);
+          elLabel.textContent = `${fmtDataHora(alvo)} − ${duracaoStr}`;
+          elRes.textContent = fmtDataHora(inicio);
         } else {
           elLabel.textContent = 'Hora pretendida − duração';
           elRes.textContent = '—';
@@ -1201,22 +1323,16 @@
       const velocidadeKw = getVelocidadeKw2();
       const velocidadeRaw = parseFloat(document.getElementById('velocidade2').value);
       if (!(bateria > 0 && percFinal > percRest && percRest >= 0 && velocidadeKw && horaStr)) return;
-      const energia = ((percFinal - percRest) / 100) * bateria;
       const eficiencia2h = parseFloat(document.getElementById('eficiencia2').value) || 100;
-      const horas = energia / (velocidadeKw * (eficiencia2h / 100));
-      const h = Math.floor(horas);
-      const m = Math.round((horas - h) * 60);
-      const duracaoStr = h > 0 ? `${h}h ${m}min` : `${m}min`;
-      const pad = n => String(n).padStart(2,'0');
+      const horas = horasParaCarregar(percRest, percFinal, bateria, velocidadeKw, eficiencia2h, tipoCarga2);
+      const duracaoStr = formatDuracao(horas);
       const alvo = new Date(horaStr);
-      const inicio = new Date(alvo.getTime() - horas * 3600000);
-      const inicioStr = `${pad(inicio.getDate())}/${pad(inicio.getMonth()+1)} ${pad(inicio.getHours())}:${pad(inicio.getMinutes())}`;
-      const label = modoVelocidade2 === 'kw'
-        ? `${velocidadeRaw} kW`
-        : `${velocidadeRaw}A × ${document.getElementById('tensao2').value || 230}V`;
+      const inicio = new Date(alvo.getTime() - Math.round(horas * 60) * 60000);
+      const inicioStr = fmtDataHora(inicio);
+      const label = rotuloVelocidade(velocidadeRaw, modoVelocidade2, fase2, velocidadeKw, tipoCarga2);
       const last = histTempoAte[0];
-      if (last && last.percRest === percRest && last.percFinal === percFinal && last.horaStr === horaStr && last.velocidadeRaw === velocidadeRaw) return;
-      histTempoAte.unshift({ percRest, percFinal, horaStr, velocidadeRaw, duracaoStr, inicioStr, label, hora: hora() });
+      if (last && last.percRest === percRest && last.percFinal === percFinal && last.horaStr === horaStr && last.velocidadeRaw === velocidadeRaw && last.fase === fase2 && last.tipo === tipoCarga2) return;
+      histTempoAte.unshift({ percRest, percFinal, horaStr, velocidadeRaw, fase: fase2, tipo: tipoCarga2, duracaoStr, inicioStr, label, hora: hora() });
       if (histTempoAte.length > 10) histTempoAte.pop();
       renderHistoricoTempoAte();
     }
@@ -1237,20 +1353,23 @@
 
     function limparTempoAte() {
       ['perc-restante2','perc-final2','velocidade2','bateria-tempo2','hora-pretendida','eficiencia2'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('res-energia-tempo2').textContent = '—';
-      document.getElementById('res-hora-ligar').textContent = '—';
-      document.getElementById('res-hora-ligar-label').textContent = 'Hora pretendida − duração';
-      document.getElementById('res-kw-amp2').textContent = '';
+      calcularTempoAte();
     }
 
     function resetTempoAte() {
+      tipoCarga2 = 'ac';
+      fase2 = 'mono';
+      document.getElementById('btn-ac2').classList.add('active');
+      document.getElementById('btn-dc2').classList.remove('active');
+      document.getElementById('btn-mono2').classList.add('active');
+      document.getElementById('btn-tri2').classList.remove('active');
+      const eff = document.getElementById('eficiencia2');
+      eff.disabled = false;
+      eff.value = '87.5';
+      document.getElementById('hint-eficiencia2').style.display = 'none';
       document.getElementById('bateria-tempo2').value = '82';
-      document.getElementById('eficiencia2').value = '87.5';
       ['perc-restante2','perc-final2','velocidade2','hora-pretendida'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('res-energia-tempo2').textContent = '—';
-      document.getElementById('res-hora-ligar').textContent = '—';
-      document.getElementById('res-hora-ligar-label').textContent = 'Hora pretendida − duração';
-      document.getElementById('res-kw-amp2').textContent = '';
+      calcularTempoAte();
     }
 
     // ── IVA ──
@@ -1440,18 +1559,23 @@
 
     function limparTempo() {
       ['perc-restante','perc-final','velocidade','bateria-tempo','eficiencia'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('res-energia-tempo').textContent = '—';
-      document.getElementById('res-tempo').textContent = '—';
-      document.getElementById('res-kw-amp').textContent = '';
+      calcularTempo();
     }
 
     function resetTempo() {
+      tipoCarga = 'ac';
+      fase = 'mono';
+      document.getElementById('btn-ac').classList.add('active');
+      document.getElementById('btn-dc').classList.remove('active');
+      document.getElementById('btn-mono').classList.add('active');
+      document.getElementById('btn-tri').classList.remove('active');
+      const eff = document.getElementById('eficiencia');
+      eff.disabled = false;
+      eff.value = '87.5';
+      document.getElementById('hint-eficiencia').style.display = 'none';
       document.getElementById('bateria-tempo').value = '82';
-      document.getElementById('eficiencia').value = '87.5';
       ['perc-restante','perc-final','velocidade'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('res-energia-tempo').textContent = '—';
-      document.getElementById('res-tempo').textContent = '—';
-      document.getElementById('res-kw-amp').textContent = '';
+      calcularTempo();
     }
 
     // ── Curva de carregamento ──
@@ -1468,9 +1592,8 @@
         chartInstance = new Chart(ctx, {
           type: 'line',
           data: {
-            labels: curvaData.labels.map(v => v + '%'),
             datasets: [{
-              data: curvaData.values,
+              data: curvaData.labels.map((soc, i) => ({ x: soc, y: curvaData.values[i] })),
               borderColor: '#7ee8fa',
               backgroundColor: 'rgba(126,232,250,0.08)',
               borderWidth: 2,
@@ -1492,13 +1615,23 @@
                 bodyFont: { size: 13, weight: '700' },
                 padding: 10,
                 callbacks: {
-                  title: items => `${items[0].label} bateria`,
-                  label: item => `${item.raw} kW`
+                  title: items => `${items[0].parsed.x}% bateria`,
+                  label: item => `${item.parsed.y} kW`
                 }
               }
             },
             scales: {
-              x: { ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.06)' } },
+              x: {
+                type: 'linear',
+                min: 0,
+                max: 100,
+                ticks: {
+                  color: 'rgba(255,255,255,0.5)',
+                  font: { size: 11 },
+                  callback: v => v + '%'
+                },
+                grid: { color: 'rgba(255,255,255,0.06)' }
+              },
               y: { title: { display: true, text: 'kW', color: 'rgba(255,255,255,0.4)', font: { size: 11 } }, ticks: { color: 'rgba(255,255,255,0.5)', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.06)' }, min: 0 }
             }
           }

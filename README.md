@@ -18,14 +18,16 @@ Aplicação web para calcular alcance, custo e tempo de carregamento de veículo
 
 #### Tempo para carregar
 - Calcula a energia necessária entre duas percentagens de bateria
+- Tipo de carregamento: **AC (potência constante)**, com eficiência, ou **DC (curva i5)**, integrando o tempo ao longo do SoC com potência = mínimo entre o carregador e a curva
 - Velocidade de carregamento introduzida em **kW** ou **Amperes**
-  - Em modo kW mostra o equivalente em A (calculado a 230V)
-  - Em modo A mostra o equivalente em kW, com campo de tensão (230V monofásico / 400V trifásico)
-- Campo de eficiência de carregamento (87,5% por defeito) para compensar perdas reais
+  - Escolha explícita monofásico 230 V / trifásico 400 V
+  - Em modo kW mostra o equivalente em A (monofásico: `kW × 1000 / 230`; trifásico: `kW × 1000 / (√3 × 400)`, por fase)
+  - Em modo A mostra o equivalente em kW (monofásico: `A × 230 / 1000`; trifásico: `√3 × 400 × A / 1000`)
+- Campo de eficiência de carregamento (87,5% por defeito) aplicado em AC
 - Resultado em horas e minutos com hora estimada de conclusão (ex: `9h 39min / 02/04 15:00`)
 
 #### Tempo até carregar
-- Mesmos campos de velocidade, percentagens e eficiência
+- Mesmos campos de velocidade, fase, tipo AC/DC, percentagens e eficiência
 - Define a data e hora a que o carro deve estar pronto
 - Calcula a que horas deve ligar o carregador (ex: `05/04 23:21`)
 
@@ -49,7 +51,7 @@ Aplicação web para calcular alcance, custo e tempo de carregamento de veículo
 ### Outras funcionalidades
 - Histórico por secção (regista ao sair de cada campo)
 - Botões Limpar e Reset individuais em cada secção
-- Curva de carregamento interativa com tooltip ao passar o rato (BMW i5 eDrive40)
+- Curva de carregamento interativa com tooltip ao passar o rato (BMW i5 eDrive40), eixo X linear em SoC
 - Todas as secções são recolhíveis
 - Cálculos em tempo real
 - Changelog acessível ao clicar na versão (rodapé)
